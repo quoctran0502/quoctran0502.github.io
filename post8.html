@@ -1,0 +1,268 @@
+<!doctype html><html lang="vi"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>RESTful API – Thiết kế endpoint & trao đổi JSON</title>
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="post.css">
+</head><body>
+<header class="site-header"><div class="container nav">
+  <a class="brand" href="index.html"><img class="logo" src="pics/logo.png" onerror="this.style.display='none'"><span class="brand-text">TranLeMinhQuoc</span></a>
+  <nav class="menu"><a href="index.html#hero">Home</a><a href="about.html">Giới thiệu</a><a href="blog.html">Blog</a><a href="contact.html">Liên hệ</a></nav>
+</div></header>
+
+<main><article class="post-article">
+  <header class="post-head">
+    <h1>Triển Khai RESTful API Và Giao Tiếp Giữa Ứng Dụng</h1>
+    <div class="meta">Năm 4 • 2025</div>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- 1 -->
+  <section>
+    <div class="section-title"><span class="badge">1</span><h2>Mô hình tài nguyên & quy ước URL</h2></div>
+    <p>REST xoay quanh <em>tài nguyên</em> (resource). Đặt tên số nhiều, dùng danh từ, lồng theo quan hệ cha–con khi cần.</p>
+    <table class="table" aria-label="Quy ước URL REST">
+      <thead><tr><th>Nội dung</th><th>Ví dụ</th></tr></thead>
+      <tbody>
+        <tr><td>Danh sách</td><td><code>/api/jobs</code></td></tr>
+        <tr><td>Chi tiết</td><td><code>/api/jobs/{id}</code></td></tr>
+        <tr><td>Tài nguyên con</td><td><code>/api/jobs/{id}/applications</code></td></tr>
+        <tr><td>Bộ lọc</td><td><code>/api/jobs?dept=it&amp;minSalary=1000</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="section-title"><span class="badge">2</span><h2>Phương thức HTTP & Status code</h2></div>
+    <table class="table" aria-label="Mapping hành động - HTTP - Status">
+      <thead><tr><th>Hành động</th><th>HTTP</th><th>Endpoint</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Danh sách</td><td>GET</td><td><code>/api/jobs</code></td><td>200</td></tr>
+        <tr><td>Chi tiết</td><td>GET</td><td><code>/api/jobs/{id}</code></td><td>200/404</td></tr>
+        <tr><td>Tạo</td><td>POST</td><td><code>/api/jobs</code></td><td>201 (+ Location)</td></tr>
+        <tr><td>Cập nhật thay thế</td><td>PUT</td><td><code>/api/jobs/{id}</code></td><td>200/204/404</td></tr>
+        <tr><td>Cập nhật từng phần</td><td>PATCH</td><td><code>/api/jobs/{id}</code></td><td>200/204</td></tr>
+        <tr><td>Xoá</td><td>DELETE</td><td><code>/api/jobs/{id}</code></td><td>204/404</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="section-title"><span class="badge">3</span><h2>Chuẩn lỗi (error envelope)</h2></div>
+    <p>Giữ format lỗi nhất quán giúp client dễ xử lý.</p>
+    <pre class="code"><code>
+<span class="token.comment">// Ví dụ lỗi 400</span>
+{
+  <span class="token.string">"error"</span>: {
+    <span class="token.string">"code"</span>: <span class="token.string">"VALIDATION_FAILED"</span>,
+    <span class="token.string">"message"</span>: <span class="token.string">"Trường Title bắt buộc"</span>,
+    <span class="token.string">"details"</span>: [{ <span class="token.string">"field"</span>: <span class="token.string">"title"</span>, <span class="token.string">"issue"</span>: <span class="token.string">"required"</span> }]
+  }
+}
+    </code></pre>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="section-title"><span class="badge">4</span><h2>Phân trang, lọc, sắp xếp</h2></div>
+    <p>Chuẩn hoá query: <code>page</code>, <code>pageSize</code>, <code>sort</code>, <code>filter</code>.</p>
+    <pre class="code"><code>
+<span class="token.comment">// GET /api/jobs?page=1&pageSize=10&sort=-salary,title</span>
+{
+  <span class="token.string">"meta"</span>: { <span class="token.string">"page"</span>:1, <span class="token.string">"pageSize"</span>:10, <span class="token.string">"total"</span>: 237 },
+  <span class="token.string">"data"</span>: [ /* mảng job */ ]
+}
+    </code></pre>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="section-title"><span class="badge">5</span><h2>Versioning</h2></div>
+    <p>Chọn 1 cách và giữ nhất quán:</p>
+    <ul>
+      <li>Trong URL: <code>/api/v1/jobs</code></li>
+      <li>Header: <code>Accept: application/vnd.company.v1+json</code></li>
+      <li>Query: <code>?api-version=1.0</code> (ASP.NET API Versioning hỗ trợ tốt)</li>
+    </ul>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <div class="section-title"><span class="badge">6</span><h2>Bảo mật: JWT, CORS, Rate limiting</h2></div>
+    <pre class="code"><code>
+<span class="token.comment">// Program.cs – JWT + CORS + Rate limit (tối giản)</span>
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+  .AddJwtBearer(o =&gt; {
+    o.Authority = builder.Configuration[<span class="token.string">"Jwt:Authority"</span>];
+    o.Audience  = builder.Configuration[<span class="token.string">"Jwt:Audience"</span>];
+  });
+
+builder.Services.AddCors(o =&gt; {
+  o.AddPolicy(<span class="token.string">"spa"</span>, p =&gt; p
+    .WithOrigins(<span class="token.string">"https://your-frontend.app"</span>)
+    .AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+});
+
+builder.Services.AddRateLimiter(_ =&gt; _.AddFixedWindowLimiter(<span class="token.string">"api"</span>, opt =&gt; {
+  opt.Window = TimeSpan.FromSeconds(10);
+  opt.PermitLimit = 100;
+}));
+
+var app = builder.Build();
+app.UseCors(<span class="token.string">"spa"</span>);
+app.UseRateLimiter();
+app.UseAuthentication();
+app.UseAuthorization();
+    </code></pre>
+    <div class="block">
+      <h3>Tip</h3>
+      <ul>
+        <li>Truyền token qua header <code>Authorization: Bearer &lt;jwt&gt;</code>.</li>
+        <li>Chỉ mở CORS cho origin tin cậy, không dùng <code>*</code> bừa bãi.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <div class="section-title"><span class="badge">7</span><h2>Tài liệu hoá: OpenAPI/Swagger</h2></div>
+    <pre class="code"><code>
+<span class="token.comment">// Program.cs – bật Swagger cho dev</span>
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+<span class="token.keyword">if</span> (app.Environment.IsDevelopment()) {
+  app.UseSwagger();
+  app.UseSwaggerUI();
+}
+    </code></pre>
+    <div class="block">
+      <h3>Lợi ích</h3>
+      <ul>
+        <li>Tự sinh UI thử API, chia sẻ spec cho FE/mobile.</li>
+        <li>Làm nguồn chân lý cho test tự động & SDK generator.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section>
+    <div class="section-title"><span class="badge">8</span><h2>ASP.NET Core ví dụ đầy đủ (Controller + CRUD)</h2></div>
+    <pre class="code"><code>
+[ApiController]
+[Route(<span class="token.string">"api/[controller]"</span>)]
+<span class="token.keyword">public class</span> JobsController : ControllerBase {
+  <span class="token.keyword">private readonly</span> AppDbContext _db;
+  <span class="token.keyword">public</span> JobsController(AppDbContext db){ _db = db; }
+
+  [HttpGet]
+  <span class="token.keyword">public async</span> Task&lt;IActionResult&gt; Get([FromQuery] <span class="token.keyword">int</span> page=1, [FromQuery] <span class="token.keyword">int</span> pageSize=10) {
+    var q = _db.Jobs.AsNoTracking().OrderByDescending(x =&gt; x.Salary);
+    var total = <span class="token.keyword">await</span> q.CountAsync();
+    var data  = <span class="token.keyword">await</span> q.Skip((page-1)*pageSize).Take(pageSize).ToListAsync();
+    <span class="token.keyword">return</span> Ok(<span class="token.keyword">new</span> { meta = <span class="token.keyword">new</span> { page, pageSize, total }, data });
+  }
+
+  [HttpGet(<span class="token.string">"{id:int}"</span>)]
+  <span class="token.keyword">public async</span> Task&lt;IActionResult&gt; GetById(<span class="token.keyword">int</span> id) {
+    var job = <span class="token.keyword">await</span> _db.Jobs.FindAsync(id);
+    <span class="token.keyword">return</span> job is null ? NotFound() : Ok(job);
+  }
+
+  [HttpPost]
+  <span class="token.keyword">public async</span> Task&lt;IActionResult&gt; Create([FromBody] Job vm) {
+    <span class="token.keyword">if</span> (!ModelState.IsValid) <span class="token.keyword">return</span> ValidationProblem(ModelState);
+    _db.Jobs.Add(vm);
+    <span class="token.keyword">await</span> _db.SaveChangesAsync();
+    <span class="token.keyword">return</span> CreatedAtAction(nameof(GetById), <span class="token.keyword">new</span> { id = vm.Id }, vm);
+  }
+
+  [HttpPut(<span class="token.string">"{id:int}"</span>)]
+  <span class="token.keyword">public async</span> Task&lt;IActionResult&gt; Update(<span class="token.keyword">int</span> id, [FromBody] Job vm) {
+    <span class="token.keyword">if</span> (id != vm.Id) <span class="token.keyword">return</span> BadRequest();
+    _db.Entry(vm).State = EntityState.Modified;
+    <span class="token.keyword">await</span> _db.SaveChangesAsync();
+    <span class="token.keyword">return</span> NoContent();
+  }
+
+  [HttpDelete(<span class="token.string">"{id:int}"</span>)]
+  <span class="token.keyword">public async</span> Task&lt;IActionResult&gt; Delete(<span class="token.keyword">int</span> id) {
+    var job = <span class="token.keyword">await</span> _db.Jobs.FindAsync(id);
+    <span class="token.keyword">if</span> (job is null) <span class="token.keyword">return</span> NotFound();
+    _db.Jobs.Remove(job);
+    <span class="token.keyword">await</span> _db.SaveChangesAsync();
+    <span class="token.keyword">return</span> NoContent();
+  }
+}
+    </code></pre>
+
+    <div class="block">
+      <h3>Mẹo cuối</h3>
+      <ul>
+        <li><strong>Idempotency</strong> cho POST nhạy cảm: header <code>Idempotency-Key</code>.</li>
+        <li><strong>ETag/If-None-Match</strong> để cache 304, giảm băng thông.</li>
+        <li>Chuẩn hoá datetime (UTC, ISO 8601), số trang bắt đầu từ 1.</li>
+      </ul>
+    </div>
+
+    <nav style="margin-top:16px"><a href="#" class="btn ghost back-button">← Quay lại</a></nav>
+  </section>
+
+  <!-- Related -->
+  <section class="related"><h2>Related Posts</h2>
+    <div class="rel-grid">
+      <article class="rel-card"><img src="pics/aspnetcore.png" alt="ASP.NET Core MVC"><div class="rel-body">
+        <div class="rel-title">ASP.NET Core MVC</div><div class="rel-meta">Web • MVC</div>
+        <p class="rel-excerpt">Triển khai nghiệp vụ, ViewModel & Validation.</p>
+        <a class="rel-btn" href="post7.html?from=blog.html">Read More</a>
+      </div></article>
+      <article class="rel-card"><img src="pics/sqlserver.png" alt="SQL Server"><div class="rel-body">
+        <div class="rel-title">SQL Server</div><div class="rel-meta">DB</div>
+        <p class="rel-excerpt">Lưu trữ & tối ưu dữ liệu cho API.</p>
+        <a class="rel-btn" href="post6.html?from=blog.html">Read More</a>
+      </div></article>
+      <article class="rel-card"><img src="pics/javascript_basic.jpg" alt="JavaScript"><div class="rel-body">
+        <div class="rel-title">JavaScript</div><div class="rel-meta">Web • JS</div>
+        <p class="rel-excerpt">Tiêu thụ API với fetch/async.</p>
+        <a class="rel-btn" href="post5.html?from=blog.html">Read More</a>
+      </div></article>
+    </div>
+  </section>
+</article></main>
+
+<footer class="site-footer">
+    <div class="container footer-grid">
+      <div><h2>TRẦN LÊ MINH QUỐC</h2></div>
+      <div>
+        <h2>Điều hướng</h2>
+        <ul class="foot-list">
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Kết nối</h2>
+        <ul class="foot-list">
+          <li><a href="https://github.com/quoctran0502" target="_blank" rel="noopener"><img src="pics/icons/github.svg" alt="GitHub"></a></li>
+          <li><a href="https://www.facebook.com/quoc.trann05" target="_blank" rel="noopener"><img src="pics/icons/facebook.svg" alt="Facebook"></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">© <span id="year">2025</span> • TRẦN LÊ MINH QUỐC</div>
+  </footer><script>
+(() => {
+  const y=document.getElementById('year'); y&&(y.textContent=new Date().getFullYear());
+  const b=document.querySelector('.back-button');
+  const f=new URLSearchParams(location.search).get('from');
+  b&&b.addEventListener('click',e=>{
+    e.preventDefault();
+    if(f){ location.replace(f); }
+    else if(history.length>1){ history.back(); }
+    else{ location.href='blog.html'; }
+  });
+})();
+</script>
+</body></html>

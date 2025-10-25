@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quản lý quán cà phê</title>
+  <meta name="description" content="Hệ thống mini cho quán cà phê: quản lý bàn, order món, thanh toán & hóa đơn. Xây dựng với ASP.NET Core MVC, SQL Server, HTML/CSS." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html" aria-label="Trang chủ">
+        <img class="logo" src="pics/logo.png" onerror="this.style.display='none'" alt="">
+        <span class="brand-text">Q_Blog</span>
+      </a>
+      <nav class="menu">
+        <a class="nav-link" href="#hero" data-target="hero">Home</a>
+        <a class="nav-link" href="about.html" data-target="gioi-thieu">Giới thiệu</a>
+        <a class="nav-link" href="blog.html" data-target="blog">Blog</a>
+        <a class="nav-link" href="contact.html" data-target="contact">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="max-width: 980px; padding: var(--g6) var(--g4)">
+
+    <!-- HERO -->
+    <article class="card" style="padding: var(--g5)">
+      <header style="margin-bottom: 6px">
+        <p class="eyebrow">• Dịch vụ</p>
+        <h1 class="display" style="font-size: clamp(28px, 4vw, 44px)">Quản lý quán cà phê</h1>
+        <p class="meta" style="margin-top: 8px">
+          <time datetime="2025-06-20">• Thời gian: Tháng 6, 2025</time>
+        </p>
+      </header>
+
+      <!-- Tóm tắt nhanh + Thông số -->
+      <section class="two-col" style="gap: var(--g4); align-items: start">
+        <div>
+          <p>
+            <b>Hệ thống  quản lý quán cà phê giúp quán vận hành gọn gàng: giữ bàn theo giờ, order món nhanh,
+            thanh toán một chạm và lưu hóa đơn tự động. Mục tiêu là giảm sai sót, tăng tốc độ phục vụ
+            và minh bạch doanh thu mỗi ca.
+          </p>
+        </div>
+
+        <aside class="card" style="padding: var(--g4)">
+          <h3 style="margin: 0 0 10px; font-weight: 800">Thông số dự án</h3>
+          <ul class="foot-list">
+            <li><b>Thời gian:</b> 4–5 tuần (thiết kế → triển khai)</li>
+            <li><b>Quy mô DB:</b> ~12 bảng (bàn, khu vực, món, order, hóa đơn…)</li>
+            <li><b>Người dùng mẫu:</b> Phục vụ, Thu ngân, Quản lý</li>
+            <li><b>Triển khai:</b> Localhost + Docker (SQL Server)</li>
+          </ul>
+          <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px">
+            <span class="chip">ASP.NET Core MVC</span>
+            <span class="chip">SQL Server</span>
+            <span class="chip">Entity Framework</span>
+            <span class="chip">HTML/CSS</span>
+          </div>
+        </aside>
+      </section>
+
+      <hr style="border:0; border-top:1px solid var(--border); margin: 20px 0" />
+
+      <!-- Carousel -->
+      <section>
+        <div class="carousel-container" aria-label="Giao diện CoffeeManager">
+          <div class="carousel">
+            <img src="pics/cf1.png"    alt="Giao diện quản lý cà phê"                 class="carousel-image">
+            <img src="pics/cf2.png"  alt="Form xem báo cáo"             class="carousel-image">
+            <img src="pics/cf3.png"  alt="Form quản lý bàn"                 class="carousel-image">
+            <img src="pics/cf4.png"  alt="Form chọn thực đơn"            class="carousel-image">
+            <img src="pics/cf5.png"  alt="Form quản lý nhân viên"               class="carousel-image">
+            <img src="pics/cf6.png"  alt="Form quản lý menu"          class="carousel-image">
+          </div>
+        </div>
+      </section>
+
+      <!-- Vấn đề & Giải pháp -->
+      <section style="margin-top: var(--g4); max-width: 75ch">
+        <h2>Vấn đề & hướng tiếp cận</h2>
+        <p>
+          Ghi order bằng giấy khiến chậm trễ, dễ nhầm món và khó tổng kết cuối ngày.
+          Mình xây dựng một luồng thống nhất: <i>giữ bàn → order → thanh toán → hóa đơn → báo cáo</i>,
+          tách vai trò theo nghiệp vụ để màn hình luôn rõ ràng và thao tác tối thiểu.
+        </p>
+        <ul>
+          <li><b>ASP.NET Core MVC</b> – Controller/Service/Repository tách bạch.</li>
+          <li><b>Entity Framework</b> – Code First + Migration; LINQ query rõ ràng.</li>
+          <li><b>SQL Server</b> – bảng chính: <i>Area, Table, Product, Order, OrderItem, Invoice</i>.</li>
+          <li><b>UI tối giản</b> – màu trạng thái bàn trực quan, thao tác 3 bước.</li>
+        </ul>
+      </section>
+
+      <!-- Tính năng -->
+      <section style="margin-top: var(--g4)">
+        <h2>Tính năng nổi bật</h2>
+        <div class="grid-3">
+          <div class="card">
+            <h3>📅 Đặt & giữ bàn</h3>
+            <p>Giữ chỗ theo giờ, tránh trùng bàn; trạng thái Trống/Đặt/Phục vụ hiển thị theo màu.</p>
+          </div>
+          <div class="card">
+            <h3>🧾 Order cực nhanh</h3>
+            <p>Chọn danh mục → chọn món → số lượng & ghi chú (ít đường, thêm đá). Sửa/xóa tức thời.</p>
+          </div>
+          <div class="card">
+            <h3>💳 Thanh toán & hóa đơn</h3>
+            <p>Tự động tính tổng/thuế/giảm giá; tạo hóa đơn; lưu lịch sử để tra cứu và đối soát.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Kết quả & Học được -->
+      <section style="margin-top: var(--g4); max-width: 75ch">
+        <h2>Kết quả & điều rút ra</h2>
+        <p>
+          Quy trình đồng bộ giúp giảm ~40% thời gian ghi order, hạn chế nhầm lẫn
+          và tự động hóa báo cáo cuối ca. Mình rèn được cách giữ kiến trúc gọn nhưng
+          vẫn sẵn sàng mở rộng: đa chi nhánh, QR order tại bàn, phân tích doanh thu nâng cao.
+        </p>
+      </section>
+
+      <!-- Liên kết -->
+      <nav style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap">
+        <a class="btn ghost" href="about.html#du-an">← Quay lại danh sách dự án</a>
+      </nav>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <h2>TRẦN LÊ MINH QUỐC</h2>
+      </div>
+      <div>
+        <h2>Điều hướng</h2>
+        <ul class="foot-list nav-list">
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contact.html">Liên hệ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Kết nối</h2>
+        <ul class="foot-list social-list">
+          <li>
+            <a href="https://github.com/quoctran0502" target="_blank" rel="noopener" aria-label="GitHub">
+              <img src="pics/icons/github.svg" alt="GitHub">
+            </a>
+          </li>
+          <li>
+            <a href="https://www.facebook.com/quoc.trann05" target="_blank" rel="noopener" aria-label="Facebook">
+              <img src="pics/icons/facebook.svg" alt="Facebook">
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">© <span id="year">2025</span> • TRẦN LÊ MINH QUỐC</div>
+  </footer>
+
+  <script>
+    const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

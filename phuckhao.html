@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>• Hệ thống hỗ trợ phúc khảo</title>
+  <meta name="description" content="Hệ thống hỗ trợ phúc khảo cho sinh viên và giảng viên: nộp đơn, theo dõi trạng thái, chấm lại và phản hồi minh bạch. Xây dựng với ASP.NET Core MVC, SQL Server, HTML/CSS." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html" aria-label="Trang chủ">
+        <img class="logo" src="pics/logo.png" onerror="this.style.display='none'" alt="">
+        <span class="brand-text">TranLeMinhQuoc</span>
+      </a>
+      <nav class="menu">
+        <a class="nav-link" href="#hero" data-target="hero">Home</a>
+        <a class="nav-link" href="about.html" data-target="gioi-thieu">Giới thiệu</a>
+        <a class="nav-link" href="blog.html" data-target="blog">Blog</a>
+        <a class="nav-link" href="contact.html" data-target="contact">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="max-width: 980px; padding: var(--g6) var(--g4)">
+
+    <!-- HERO -->
+    <article class="card" style="padding: var(--g5)">
+      <header style="margin-bottom: 6px">
+        <p class="eyebrow">• Giáo vụ & Đào tạo</p>
+        <h1 class="display" style="font-size: clamp(28px, 4vw, 44px)">Hệ thống hỗ trợ phúc khảo</h1>
+        <p class="meta" style="margin-top: 8px">
+          <time datetime="2025-06-20">• Thời gian: Tháng 6, 2025</time>
+        </p>
+      </header>
+
+      <!-- Tóm tắt nhanh + Thông số -->
+      <section class="two-col" style="gap: var(--g4); align-items: start">
+        <div>
+          <p>
+            <b>Hệ thống hỗ trợ phúc khảo</b> giúp số hóa quy trình phúc khảo: sinh viên nộp đơn theo đợt mở, 
+            giảng viên chấm lại minh bạch, bộ phận giáo vụ theo dõi thống kê – tất cả trong một luồng thống nhất 
+            và có ghi vết. Mục tiêu là giảm thời gian xử lý, chuẩn hóa biểu mẫu và minh bạch kết quả.
+          </p>
+        </div>
+
+        <aside class="card" style="padding: var(--g4)">
+          <h3 style="margin: 0 0 10px; font-weight: 800">Thông số dự án</h3>
+          <ul class="foot-list">
+            <li><b>Thời gian:</b> 5–6 tuần (phân tích → triển khai)</li>
+            <li><b>Quy mô DB:</b> ~12–15 bảng (đợt phúc khảo, môn, lớp, đơn, minh chứng…)</li>
+            <li><b>Vai trò:</b> Sinh viên • Giảng viên • Giáo vụ/Admin</li>
+            <li><b>Triển khai:</b> Localhost + Docker (SQL Server)</li>
+          </ul>
+          <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px">
+            <span class="chip">ASP.NET Core MVC</span>
+            <span class="chip">SQL Server</span>
+            <span class="chip">Entity Framework</span>
+            <span class="chip">HTML/CSS</span>
+          </div>
+        </aside>
+      </section>
+
+      <hr style="border:0; border-top:1px solid var(--border); margin: 20px 0" />
+
+      <!-- Carousel -->
+      <section>
+        <div class="carousel-container" aria-label="Giao diện Hệ thống hỗ trợ phúc khảo">
+          <div class="carousel">
+            <!-- Thay ảnh thực tế của bạn -->
+            <img src="pics/regrade-1.png" alt="Trang giao diện phúc khảo" class="carousel-image">
+            <img src="pics/regrade-2.png" alt="Trang giao diện Admin" class="carousel-image">
+            <img src="pics/regrade-3.png" alt="Trang giao diện sinh viên" class="carousel-image">
+            <img src="pics/regrade-4.png" alt="Trang giao diện nhân viên" class="carousel-image">
+            <img src="pics/regrade-5.png" alt="Trang giao diện giảng viên" class="carousel-image">
+            <img src="pics/regrade-6.png" alt="Giao diện đăng nhập đăng ký" class="carousel-image">
+          </div>
+        </div>
+      </section>
+
+      <!-- Vấn đề & Giải pháp -->
+      <section style="margin-top: var(--g4); max-width: 75ch">
+        <h2>Vấn đề & hướng tiếp cận</h2>
+        <p>
+          Quy trình phúc khảo truyền thống thường dàn trải qua email/biểu mẫu rời rạc, dễ thất lạc minh chứng 
+          và khó tổng hợp kết quả theo đợt. Mình thiết kế một luồng thống nhất 
+          <i>mở đợt → sinh viên nộp → giảng viên chấm → giáo vụ phê duyệt → công bố kết quả</i>, 
+          kèm phân quyền rõ ràng và ghi vết thay đổi.
+        </p>
+        <ul>
+          <li><b>ASP.NET Core MVC</b> – Controller/Service/Repository tách bạch giúp bảo trì dễ.</li>
+          <li><b>Entity Framework</b> – Code First + Migration; LINQ truy vấn rõ ràng.</li>
+          <li><b>SQL Server</b> – bảng chính: <i>RegradePeriod, Course, Class, Request, Evidence, Assignment, Result, User</i>.</li>
+          <li><b>UI tối giản</b> – biểu mẫu ngắn gọn, trạng thái/tiến trình trực quan.</li>
+        </ul>
+      </section>
+
+      <!-- Tính năng -->
+      <section style="margin-top: var(--g4)">
+        <h2>Tính năng nổi bật</h2>
+        <div class="grid-3">
+          <div class="card">
+            <h3>📝 Nộp đơn có minh chứng</h3>
+            <p>Sinh viên tạo đơn trong đợt mở; đính kèm file minh chứng; theo dõi tiến trình theo từng môn.</p>
+          </div>
+          <div class="card">
+            <h3>✅ Chấm lại & phản hồi</h3>
+            <p>Giảng viên được phân công nhận danh sách; nhập điểm chấm lại & ghi chú; hệ thống ghi lịch sử.</p>
+          </div>
+          <div class="card">
+            <h3>📊 Tổng hợp & công bố</h3>
+            <p>Giáo vụ duyệt kết quả, xuất báo cáo đợt; thông báo cho sinh viên; thống kê theo lớp/môn.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Kết quả & Học được -->
+      <section style="margin-top: var(--g4); max-width: 75ch">
+        <h2>Kết quả & điều rút ra</h2>
+        <p>
+          Hệ thống hỗ trợ phúc khảo giúp giảm đáng kể thời gian tổng hợp, chuẩn hóa biểu mẫu và tăng tính minh bạch. 
+          Mình học được cách thiết kế quy trình đa vai trò, dùng ghi vết để theo dõi thay đổi nhạy cảm, 
+          đồng thời giữ giao diện tối giản để mọi bước đều nhanh và rõ ràng.
+        </p>
+      </section>
+
+      <!-- Liên kết -->
+      <nav style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap">
+        <a class="btn ghost" href="about.html#du-an">← Quay lại danh sách dự án</a>
+      </nav>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <h2>TRẦN LÊ MINH QUỐC</h2>
+      </div>
+      <div>
+        <h2>Điều hướng</h2>
+        <ul class="foot-list nav-list">
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contact.html">Liên hệ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Kết nối</h2>
+        <ul class="foot-list social-list">
+          <li>
+            <a href="https://github.com/quoctran0502" target="_blank" rel="noopener" aria-label="GitHub">
+              <img src="pics/icons/github.svg" alt="GitHub">
+            </a>
+          </li>
+          <li>
+            <a href="https://www.facebook.com/quoc.trann05" target="_blank" rel="noopener" aria-label="Facebook">
+              <img src="pics/icons/facebook.svg" alt="Facebook">
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">© <span id="year">2025</span> • TRẦN LÊ MINH QUỐC</div>
+  </footer>
+
+  <script>
+    const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

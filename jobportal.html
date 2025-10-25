@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JobPortal • Web tìm kiếm việc làm</title>
+  <meta name="description" content="JobPortal – nền tảng tuyển dụng mini: đăng tin, lọc việc, nộp hồ sơ, theo dõi trạng thái. Xây dựng với ASP.NET Core MVC, SQL Server, HTML/CSS." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html" aria-label="Trang chủ">
+        <img class="logo" src="pics/logo.png" onerror="this.style.display='none'">
+        <span class="brand-text">Q_Blog</span>
+      </a>
+      <nav class="menu">
+        <a class="nav-link" href="#hero" data-target="hero">Home</a>
+        <a class="nav-link" href="about.html" data-target="gioi-thieu">Giới thiệu</a>
+        <a class="nav-link" href="blog.html" data-target="blog">Blog</a>
+        <a class="nav-link" href="contact.html" data-target="contact">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="max-width: 980px; padding: var(--g6) var(--g4)">
+
+    <!-- HERO -->
+    <article class="card" style="padding: var(--g5)">
+      <header style="margin-bottom: 6px">
+        <p class="eyebrow">• Tuyển dụng</p>
+        <h1 class="display" style="font-size: clamp(28px, 4vw, 44px)">JobPortal – Web tìm kiếm việc làm</h1>
+        <p class="meta" style="margin-top: 8px">
+          <time datetime="2025-06-20">• Thời gian: Tháng 6, 2025</time>
+        </p>
+      </header>
+
+      <!-- Tóm tắt nhanh + Thông số -->
+      <section class="two-col" style="gap: var(--g4); align-items: start">
+        <div>
+          <p>
+            <b>JobPortal</b> là một ứng dụng web gọn nhẹ giúp người tìm việc và nhà tuyển dụng kết nối nhanh chóng. 
+            Hệ thống cho phép đăng tin, tìm kiếm việc bằng nhiều bộ lọc (địa điểm, lĩnh vực, mức lương), nộp hồ sơ trực tuyến, 
+            và theo dõi trạng thái ứng tuyển theo thời gian thực. Mục tiêu của mình là xây dựng một nền tảng có kiến trúc rõ ràng, 
+            dễ mở rộng, giao diện sạch và tốc độ phản hồi tốt.
+          </p>
+        </div>
+
+        <aside class="card" style="padding: var(--g4)">
+          <h3 style="margin: 0 0 10px; font-weight: 800">Thông số dự án</h3>
+          <ul class="foot-list">
+            <li><b>Thời gian:</b> 4 tuần (thiết kế → triển khai)</li>
+            <li><b>Quy mô DB:</b> ~10 bảng, ~15 quan hệ</li>
+            <li><b>Người dùng mẫu:</b> 2 vai trò (Ứng viên, Nhà tuyển dụng)</li>
+            <li><b>Triển khai:</b> Localhost + Docker (SQL Server)</li>
+          </ul>
+          <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px">
+            <span class="chip">ASP.NET Core MVC</span>
+            <span class="chip">SQL Server</span>
+            <span class="chip">Entity Framework</span>
+            <span class="chip">HTML/CSS</span>
+          </div>
+        </aside>
+      </section>
+
+      <hr style="border:0; border-top:1px solid var(--border); margin: 20px 0" />
+
+      <!-- Carousel -->
+      <section>
+        <div class="carousel-container">
+          <div class="carousel">
+            <img src="pics/jobportal.png"   alt="Trang chủ JobPortal"            class="carousel-image">
+            <img src="pics/dsvl.png" alt="Danh sách việc làm"     class="carousel-image">
+            <img src="pics/vieclamungtuyen.png" alt="Danh sách ứng tuyển việc làm"        class="carousel-image">
+            <img src="pics/giaodiendangnhapdk.png" alt="Giao diện đăng nhập và đăng ký"      class="carousel-image">
+            <img src="pics/giaodiendscty.png" alt="Giao diện danh sách công ty"        class="carousel-image">
+            <img src="pics/giaodiendslinhvuc.png" alt="Giao diện danh sách lĩnh vực" class="carousel-image">
+          </div>
+        </div>
+      </section>
+
+      <!-- Vấn đề & Giải pháp -->
+      <section style="margin-top: var(--g4); max-width: 75ch">
+        <h2>Vấn đề & hướng tiếp cận</h2>
+        <p>
+          Trải nghiệm tìm việc thường tốn thời gian vì dữ liệu phân tán, khó so sánh, 
+          và quy trình theo dõi trạng thái chưa minh bạch. Mình đề xuất một giải pháp 
+          tập trung: <i>một nơi duy nhất</i> để tìm – lọc – nộp hồ sơ – theo dõi tiến trình, 
+          đồng thời tách bạch hai vai trò người dùng để giao diện luôn gọn và dễ hiểu.
+        </p>
+        <ul>
+      <li><b>ASP.NET Core MVC</b> – chia tách rõ Controller/Service/Repository.</li>
+      <li><b>Entity Framework</b> – Code First, Migration, LINQ query tối ưu.</li>
+      <li><b>SQL Server</b> – bảng chính: <i>Jobs, Companies, Applications, Resumes, Users</i>.</li>
+      <li><b>View mạnh kiểu</b> – Model ràng buộc dữ liệu, tránh lỗi map.</li>
+    </ul>
+      </section>
+
+      <!-- Tính năng -->
+      <section style="margin-top: var(--g4)">
+        <h2>Tính năng nổi bật</h2>
+        <div class="grid-3">
+          <div class="card">
+            <h3>🔎 Bộ lọc thông minh</h3>
+            <p>Lọc theo vị trí, ngành, mức lương, hình thức. Kết quả trang hóa và ghi nhớ tiêu chí lần gần nhất.</p>
+          </div>
+          <div class="card">
+            <h3>📝 Hồ sơ & CV</h3>
+            <p>Tạo/ cập nhật hồ sơ nhanh; import thông tin từ CV; xem trước khi nộp; tự động gợi ý việc phù hợp.</p>
+          </div>
+          <div class="card">
+            <h3>📨 Theo dõi ứng tuyển</h3>
+            <p>Bảng trạng thái trực quan; timeline từng đơn; thông báo khi có thay đổi từ nhà tuyển dụng.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Kết quả & Học được -->
+      <section style="margin-top: var(--g4); max-width: 75ch">
+        <h2>Kết quả & điều rút ra</h2>
+        <p>
+          JobPortal giúp mình luyện tập quy trình đầy đủ: từ thiết kế schema, dựng API MVC, 
+          tối ưu truy vấn, tới tạo trải nghiệm người dùng mượt mà. Quan trọng hơn, mình học được cách 
+          giữ <i>kiến trúc gọn</i> nhưng vẫn đủ “chỗ” cho các tính năng sẽ bổ sung trong tương lai 
+          như gợi ý công việc bằng từ khóa, hoặc thông báo thời gian thực.
+        </p>
+      </section>
+
+      <!-- Liên kết -->
+      <nav style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap">
+        <a class="btn primary" href="https://github.com/PhanPhong0608/WebTimKiemViecLam" target="_blank" rel="noopener">Xem mã nguồn trên GitHub</a>
+        <a class="btn ghost" href="about.html#du-an">← Quay lại danh sách dự án</a>
+      </nav>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <h2>TRẦN LÊ MINH QUỐC</h2>
+      </div>
+      <div>
+        <h2>Điều hướng</h2>
+        <ul class="foot-list">
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contact.html">Liên hệ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Kết nối</h2>
+        <ul class="foot-list">
+  <li>
+    <a href="https://github.com/quoctran0502" target="_blank" rel="noopener">
+      <img src="pics/icons/github.svg" alt="GitHub">
+    </a>
+  </li>
+  <li>
+    <a href="https://www.facebook.com/quoc.trann05" target="_blank" rel="noopener">
+      <img src="pics/icons/facebook.svg" alt="Facebook">
+    </a>
+  </li>
+</ul>
+
+      </div>
+    </div>
+    <div class="copyright">© <span id="year">2025</span> • TRẦN LÊ MINH QUỐC</div>
+  </footer>
+
+  <script>
+    const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
+  </script>
+  
+</body>
+</html>

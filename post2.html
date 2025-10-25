@@ -1,0 +1,204 @@
+<!doctype html><html lang="vi"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Ngôn Ngữ C – Nền Tảng Lập Trình</title>
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="post.css">
+</head><body>
+<header class="site-header"><div class="container nav">
+  <a class="brand" href="index.html"><img class="logo" src="pics/logo.png" onerror="this.style.display='none'"><span class="brand-text">TranLeMinhQuoc</span></a>
+  <nav class="menu"><a href="index.html#hero">Home</a><a href="about.html">Giới thiệu</a><a href="blog.html">Blog</a><a href="contact.html">Liên hệ</a></nav>
+</div></header>
+
+<main><article class="post-article">
+  <header class="post-head">
+    <h1>Ngôn Ngữ C – Nền Tảng Lập Trình</h1>
+    <div class="meta">Năm 1 • 2022</div>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- 1 -->
+  <section>
+    <div class="section-title"><span class="badge">1</span><h2>Vì sao bắt đầu bằng C?</h2></div>
+    <p>C giúp mình “thấy” những gì diễn ra bên dưới: bộ nhớ, con trỏ, stack/heap và cách chương trình nói chuyện với hệ điều hành. Hiểu C tốt → chuyển qua C++/Java/Go dễ hơn vì đã nắm lõi.</p>
+
+    <table class="table" aria-label="Điểm mạnh của C">
+      <thead><tr><th>Góc nhìn</th><th>Lợi ích</th></tr></thead>
+      <tbody>
+        <tr><td>Quản lý bộ nhớ</td><td>Chủ động <code>malloc/free</code>, hiểu rò rỉ & vùng nhớ</td></tr>
+        <tr><td>Hiệu năng</td><td>Ít trừu tượng, tối ưu gần phần cứng</td></tr>
+        <tr><td>Khả chuyển</td><td>Biên dịch đa nền tảng, chuẩn C</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="section-title"><span class="badge">2</span><h2>Biến, hàm, & con trỏ – chạm vào bộ nhớ</h2></div>
+    <pre class="code"><code>
+<span class="token.keyword">#include</span> &lt;stdio.h&gt;
+
+<span class="token.keyword">int</span> sum(<span class="token.keyword">int</span> a, <span class="token.keyword">int</span> b){ <span class="token.keyword">return</span> a + b; }
+
+<span class="token.keyword">int</span> main(){
+  <span class="token.keyword">int</span> x = 5, y = 7;
+  <span class="token.keyword">int</span> *p = &amp;x;          <span class="token.comment">/* p giữ địa chỉ của x */</span>
+  printf(<span class="token.string">"x=%d, *p=%d, sum=%d\n"</span>, x, *p, sum(x,y));
+  printf(<span class="token.string">"addr x=%p, addr p=%p\n"</span>, (void*)&amp;x, (void*)&amp;p);
+  <span class="token.keyword">return</span> 0;
+}
+    </code></pre>
+
+    <div class="block">
+      <h3>Tóm lại</h3>
+      <ul>
+        <li><strong>Con trỏ</strong> là biến giữ địa chỉ → dereference bằng <code>*p</code>.</li>
+        <li>Tham trị vs tham chiếu: muốn hàm “đổi” dữ liệu gốc → truyền địa chỉ.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="section-title"><span class="badge">3</span><h2>Mảng & chuỗi C – vùng nhớ liên tiếp</h2></div>
+    <pre class="code"><code>
+<span class="token.keyword">#include</span> &lt;stdio.h&gt;
+<span class="token.keyword">#include</span> &lt;string.h&gt;
+
+<span class="token.keyword">void</span> print_arr(<span class="token.keyword">int</span> *a, <span class="token.keyword">int</span> n){
+  <span class="token.keyword">for</span> (<span class="token.keyword">int</span> i=0;i&lt;n;i++) printf(<span class="token.string">"%d "</span>, a[i]);
+  printf(<span class="token.string">"\n"</span>);
+}
+
+<span class="token.keyword">int</span> main(){
+  <span class="token.keyword">int</span> a[4] = {1,2,3,4};
+  print_arr(a, 4);                 <span class="token.comment">// mảng decay thành con trỏ</span>
+
+  <span class="token.keyword">char</span> s[16];                       <span class="token.comment">// chuỗi C: mảng char + '\0'</span>
+  strcpy(s, <span class="token.string">"Hello"</span>);
+  printf(<span class="token.string">"%s (%zu)\n"</span>, s, strlen(s));
+
+  <span class="token.comment">// con trỏ số học</span>
+  <span class="token.keyword">int</span> *p = a;  <span class="token.comment">// trỏ tới a[0]</span>
+  printf(<span class="token.string">"*(p+2)=%d\n"</span>, *(p+2)); <span class="token.comment">// =&gt; a[2]</span>
+  <span class="token.keyword">return</span> 0;
+}
+    </code></pre>
+
+    <div class="block">
+      <h3>Lưu ý nhanh</h3>
+      <ul>
+        <li>Mảng và con trỏ <em>liên quan</em> nhưng không giống nhau (kích thước khác, không gán lại tên mảng).</li>
+        <li>Chuỗi C phải có ký tự kết thúc <code>'\0'</code>; cẩn thận tràn bộ đệm khi <code>strcpy</code>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="section-title"><span class="badge">4</span><h2><code>struct</code>, <code>typedef</code> & quản lý bộ nhớ</h2></div>
+    <pre class="code"><code>
+<span class="token.keyword">#include</span> &lt;stdio.h&gt;
+<span class="token.keyword">#include</span> &lt;stdlib.h&gt;
+<span class="token.keyword">#include</span> &lt;string.h&gt;
+
+<span class="token.keyword">typedef struct</span> {
+  <span class="token.keyword">char</span> name[32];
+  <span class="token.keyword">int</span>  age;
+} Person;
+
+Person *make_person(<span class="token.keyword">const char</span>* n, <span class="token.keyword">int</span> age){
+  Person *p = (Person*)malloc(<span class="token.keyword">sizeof</span>(Person));
+  strncpy(p-&gt;name, n, <span class="token.keyword">sizeof</span>(p-&gt;name)-1);
+  p-&gt;name[<span class="token.keyword">sizeof</span>(p-&gt;name)-1] = <span class="token.string">'\0'</span>;
+  p-&gt;age = age;
+  <span class="token.keyword">return</span> p;
+}
+
+<span class="token.keyword">int</span> main(){
+  Person *alice = make_person(<span class="token.string">"Alice"</span>, 20);
+  printf(<span class="token.string">"%s - %d\n"</span>, alice-&gt;name, alice-&gt;age);
+  free(alice); <span class="token.comment">// luôn nhớ giải phóng</span>
+  <span class="token.keyword">return</span> 0;
+}
+    </code></pre>
+
+    <div class="block">
+      <h3>Gợi ý an toàn</h3>
+      <ul>
+        <li>Dùng <code>strncpy</code>/<code>snprintf</code> để tránh tràn bộ đệm.</li>
+        <li>Quy ước “ai <code>malloc</code> thì người đó <code>free</code>”.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="section-title"><span class="badge">5</span><h2>Tách file .h/.c & biên dịch</h2></div>
+    <pre class="code"><code>
+<span class="token.comment">// mathx.h</span>
+<span class="token.keyword">int</span> add(<span class="token.keyword">int</span> a, <span class="token.keyword">int</span> b);
+
+<span class="token.comment">// mathx.c</span>
+<span class="token.keyword">#include</span> <span class="token.string">"mathx.h"</span>
+<span class="token.keyword">int</span> add(<span class="token.keyword">int</span> a, <span class="token.keyword">int</span> b){ <span class="token.keyword">return</span> a+b; }
+
+<span class="token.comment">// main.c</span>
+<span class="token.keyword">#include</span> &lt;stdio.h&gt;
+<span class="token.keyword">#include</span> <span class="token.string">"mathx.h"</span>
+<span class="token.keyword">int</span> main(){ printf(<span class="token.string">"%d\n"</span>, add(3,4)); }
+    </code></pre>
+    <pre class="code"><code>
+<span class="token.comment"># Biên dịch & liên kết</span>
+gcc -c mathx.c        <span class="token.comment"># tạo mathx.o</span>
+gcc -c main.c         <span class="token.comment"># tạo main.o</span>
+gcc main.o mathx.o -o app
+./app                 <span class="token.comment"># =&gt; 7</span>
+    </code></pre>
+
+    <div class="block">
+      <h3>Kết luận</h3>
+      <ul>
+        <li>Hiểu con trỏ, mảng, chuỗi, <code>struct</code> là “xương sống” của C.</li>
+        <li>Tách file rõ ràng giúp dự án lớn dễ quản lý & build.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Back -->
+  <nav style="margin-top:16px"><a href="#" class="btn ghost back-button">← Quay lại</a></nav>
+
+  <!-- Related -->
+  <section class="related"><h2>Related Posts</h2>
+    <div class="rel-grid">
+      <article class="rel-card"><img src="pics/java_oop.png" alt="OOP trong Java"><div class="rel-body"><div class="rel-title">OOP trong Java</div><div class="rel-meta">Java • OOP</div><p class="rel-excerpt">Class/Object/Kế thừa, đa hình.</p><a class="rel-btn" href="post3.html?from=blog.html">Read More</a></div></article>
+      <article class="rel-card"><img src="pics/html_css.png" alt="HTML CSS"><div class="rel-body"><div class="rel-title">HTML & CSS</div><div class="rel-meta">Web • UI</div><p class="rel-excerpt">Xây layout & responsive.</p><a class="rel-btn" href="post4.html?from=blog.html">Read More</a></div></article>
+      <article class="rel-card"><img src="pics/javascript_basic.jpg" alt="JavaScript"><div class="rel-body"><div class="rel-title">JavaScript cơ bản</div><div class="rel-meta">Web • JS</div><p class="rel-excerpt">Sự kiện, DOM, fetch API.</p><a class="rel-btn" href="post5.html?from=blog.html">Read More</a></div></article>
+    </div>
+  </section>
+</article></main>
+
+<footer class="site-footer">
+    <div class="container footer-grid">
+      <div><h2>TRẦN LÊ MINH QUỐC</h2></div>
+      <div>
+        <h2>Điều hướng</h2>
+        <ul class="foot-list">
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Kết nối</h2>
+        <ul class="foot-list">
+          <li><a href="https://github.com/quoctran0502" target="_blank" rel="noopener"><img src="pics/icons/github.svg" alt="GitHub"></a></li>
+          <li><a href="https://www.facebook.com/quoc.trann05" target="_blank" rel="noopener"><img src="pics/icons/facebook.svg" alt="Facebook"></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">© <span id="year">2025</span> • TRẦN LÊ MINH QUỐC</div>
+  </footer>
+<script>(()=>{const y=document.getElementById('year');y&&(y.textContent=new Date().getFullYear());const b=document.querySelector('.back-button');const f=new URLSearchParams(location.search).get('from');b&&b.addEventListener('click',e=>{e.preventDefault();if(f)location.replace(f);else if(history.length>1)history.back();else location.href='blog.html';});})();</script>
+</body></html>

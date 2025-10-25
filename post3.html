@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="vi"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>OOP trong Java – Class, Kế thừa, Đa hình</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="post.css">
+</head>
+<body>
+<header class="site-header"><div class="container nav">
+  <a class="brand" href="index.html">
+    <img class="logo" src="pics/logo.png" onerror="this.style.display='none'">
+    <span class="brand-text">TranLeMinhQuoc</span>
+  </a>
+  <nav class="menu">
+    <a href="index.html#hero">Home</a>
+    <a href="about.html">Giới thiệu</a>
+    <a href="blog.html">Blog</a>
+    <a href="contact.html">Liên hệ</a>
+  </nav>
+</div></header>
+
+<main>
+<article class="post-article">
+  <header class="post-head">
+    <h1>Làm Quen Với Lập Trình Hướng Đối Tượng Trong Java</h1>
+    <div class="meta">Năm 2 • 2023</div>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- 1 -->
+  <section>
+    <div class="section-title"><span class="badge">1</span><h2>Tư duy đối tượng</h2></div>
+    <p>OOP gom <strong>dữ liệu</strong> và <strong>hành vi</strong> vào một đơn vị là <em>class</em>. Ta thao tác qua đối tượng (object) thay vì lộ chi tiết triển khai. Nhờ vậy mã dễ mở rộng, test và tái sử dụng.</p>
+    <div class="block">
+      <h3>Mục tiêu của OOP</h3>
+      <ul>
+        <li><strong>Encapsulation</strong>: che giấu chi tiết – chỉ lộ public API.</li>
+        <li><strong>Inheritance</strong>: tái sử dụng & mở rộng hành vi.</li>
+        <li><strong>Polymorphism</strong>: cùng 1 lời gọi nhưng chạy đúng phiên bản (override) ở runtime.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="section-title"><span class="badge">2</span><h2>Class & Đóng gói (Encapsulation)</h2></div>
+    <pre class="code"><code>
+<span class="token.keyword">class</span> BankAccount {
+  <span class="token.keyword">private</span> <span class="token.keyword">double</span> balance;       <span class="token.comment">// ẩn bên trong</span>
+
+  <span class="token.keyword">public</span> BankAccount(<span class="token.keyword">double</span> init) {
+    <span class="token.keyword">this</span>.balance = init;
+  }
+
+  <span class="token.keyword">public</span> <span class="token.keyword">void</span> deposit(<span class="token.keyword">double</span> amount) {
+    <span class="token.keyword">if</span> (amount &lt;= 0) <span class="token.keyword">throw</span> <span class="token.keyword">new</span> IllegalArgumentException(<span class="token.string">"amount"</span>);
+    balance += amount;
+  }
+
+  <span class="token.keyword">public</span> <span class="token.keyword">boolean</span> withdraw(<span class="token.keyword">double</span> amount) {
+    <span class="token.keyword">if</span> (amount &lt;= 0 || amount &gt; balance) <span class="token.keyword">return</span> <span class="token.keyword">false</span>;
+    balance -= amount;
+    <span class="token.keyword">return</span> <span class="token.keyword">true</span>;
+  }
+
+  <span class="token.keyword">public</span> <span class="token.keyword">double</span> getBalance() { <span class="token.keyword">return</span> balance; }
+}
+    </code></pre>
+    <div class="block">
+      <h3>Ghi nhớ</h3>
+      <ul>
+        <li>Trường dữ liệu để <code>private</code>, expose qua phương thức.</li>
+        <li>Đặt <em>invariant</em> (điều kiện bất biến) ngay trong class để bảo vệ trạng thái.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="section-title"><span class="badge">3</span><h2>Kế thừa & Đa hình (Override)</h2></div>
+    <pre class="code"><code>
+<span class="token.keyword">class</span> Vehicle {
+  <span class="token.keyword">void</span> move() { System.out.println(<span class="token.string">"moving..."</span>); }
+}
+
+<span class="token.keyword">class</span> Car <span class="token.keyword">extends</span> Vehicle {
+  @Override <span class="token.keyword">void</span> move() { System.out.println(<span class="token.string">"car..."</span>); }
+}
+
+<span class="token.keyword">class</span> Bike <span class="token.keyword">extends</span> Vehicle {
+  @Override <span class="token.keyword">void</span> move() { System.out.println(<span class="token.string">"bike..."</span>); }
+}
+
+<span class="token.keyword">public class</span> Demo {
+  <span class="token.keyword">public static void</span> main(String[] a){
+    Vehicle v1 = <span class="token.keyword">new</span> Car();
+    Vehicle v2 = <span class="token.keyword">new</span> Bike();
+    v1.move();  <span class="token.comment">// car...</span>
+    v2.move();  <span class="token.comment">// bike...</span>
+  }
+}
+    </code></pre>
+    <div class="block">
+      <h3>Note</h3>
+      <ul>
+        <li><strong>Dynamic dispatch</strong>: biến kiểu cha nhưng thực thi theo kiểu thật (Car/Bike).</li>
+        <li>Ưu tiên lập trình theo <em>abstraction</em> (kiểu cha/giao diện) thay vì kiểu cụ thể.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="section-title"><span class="badge">4</span><h2>Interface & Abstract class</h2></div>
+    <pre class="code"><code>
+<span class="token.keyword">interface</span> Payable { <span class="token.keyword">double</span> pay(); }
+
+<span class="token.keyword">abstract class</span> Employee <span class="token.keyword">implements</span> Payable {
+  <span class="token.keyword">protected</span> <span class="token.keyword">final</span> String name;
+  Employee(String n){ <span class="token.keyword">this</span>.name = n; }
+  <span class="token.keyword">abstract</span> <span class="token.keyword">double</span> pay();     <span class="token.comment">// bắt buộc lớp con cài đặt</span>
+}
+
+<span class="token.keyword">class</span> SalariedEmp <span class="token.keyword">extends</span> Employee {
+  <span class="token.keyword">private</span> <span class="token.keyword">double</span> monthly;
+  SalariedEmp(String n, <span class="token.keyword">double</span> m){ <span class="token.keyword">super</span>(n); monthly = m; }
+  @Override <span class="token.keyword">double</span> pay(){ <span class="token.keyword">return</span> monthly; }
+}
+    </code></pre>
+    <div class="block">
+      <h3>Khi nào dùng?</h3>
+      <ul>
+        <li><strong>interface</strong>: mô tả hành vi (contract), đa kế thừa được.</li>
+        <li><strong>abstract class</strong>: chia sẻ 1 phần triển khai + trạng thái chung.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="section-title"><span class="badge">5</span><h2>Composition &gt; Inheritance?</h2></div>
+    <pre class="code"><code>
+<span class="token.keyword">interface</span> Engine { <span class="token.keyword">void</span> start(); }
+<span class="token.keyword">class</span> V8Engine <span class="token.keyword">implements</span> Engine { <span class="token.keyword">public void</span> start(){ System.out.println(<span class="token.string">"V8!"</span>); } }
+
+<span class="token.keyword">class</span> Car2 {                <span class="token.comment">// dùng composition</span>
+  <span class="token.keyword">private</span> <span class="token.keyword">final</span> Engine engine;
+  Car2(Engine e){ <span class="token.keyword">this</span>.engine = e; }
+  <span class="token.keyword">void</span> start(){ engine.start(); }
+}
+    </code></pre>
+    <div class="block">
+      <h3>Vì sao chuộng composition?</h3>
+      <ul>
+        <li>Giảm phụ thuộc chặt (tight coupling) do cây thừa kế phức tạp.</li>
+        <li>Dễ thay đổi hành vi bằng cách truyền đối tượng khác (DI/Strategy).</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <div class="section-title"><span class="badge">6</span><h2>Best-practice nhanh</h2></div>
+    <ul>
+      <li>Ưu tiên bất biến (fields <code>final</code> khi có thể), giới hạn mutability.</li>
+      <li>Override <code>toString</code>, <code>equals</code>, <code>hashCode</code> cho entity/vo.</li>
+      <li>Đặt cấu trúc package theo layer: <code>domain</code>, <code>service</code>, <code>web</code>.</li>
+      <li>Khi vào Spring: bơm phụ thuộc qua constructor, code theo interface.</li>
+    </ul>
+  </section>
+
+  <div class="divider"></div>
+
+  <section>
+    <div class="section-title"><span class="badge">7</span><h2>Kết luận</h2></div>
+    <p>OOP là nền tảng để bước vào những framework lớn như Spring. Làm chủ đóng gói, kế thừa, đa hình và biết khi nào chọn composition sẽ giúp kiến trúc sạch và dễ mở rộng.</p>
+    <nav style="margin-top:16px"><a href="#" class="btn ghost back-button">← Quay lại</a></nav>
+  </section>
+
+  <!-- Related -->
+  <section class="related"><h2>Related Posts</h2>
+    <div class="rel-grid">
+      <article class="rel-card">
+        <img src="pics/sqlserver.png" alt="SQL Server">
+        <div class="rel-body">
+          <div class="rel-title">SQL Server cơ bản</div>
+          <div class="rel-meta">DB • SQL</div>
+          <p class="rel-excerpt">Truy vấn, JOIN và tối ưu.</p>
+          <a class="rel-btn" href="post6.html?from=blog.html">Read More</a>
+        </div>
+      </article>
+      <article class="rel-card">
+        <img src="pics/aspnetcore.png" alt="ASP.NET Core MVC">
+        <div class="rel-body">
+          <div class="rel-title">ASP.NET Core MVC</div>
+          <div class="rel-meta">Web • MVC</div>
+          <p class="rel-excerpt">Model–View–Controller thực chiến.</p>
+          <a class="rel-btn" href="post7.html?from=blog.html">Read More</a>
+        </div>
+      </article>
+      <article class="rel-card">
+        <img src="pics/restapi.png" alt="RESTful API">
+        <div class="rel-body">
+          <div class="rel-title">RESTful API</div>
+          <div class="rel-meta">API • JSON</div>
+          <p class="rel-excerpt">Thiết kế endpoint & giao tiếp.</p>
+          <a class="rel-btn" href="post8.html?from=blog.html">Read More</a>
+        </div>
+      </article>
+    </div>
+  </section>
+</article>
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-grid">
+      <div><h2>TRẦN LÊ MINH QUỐC</h2></div>
+      <div>
+        <h2>Điều hướng</h2>
+        <ul class="foot-list">
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Kết nối</h2>
+        <ul class="foot-list">
+          <li><a href="https://github.com/quoctran0502" target="_blank" rel="noopener"><img src="pics/icons/github.svg" alt="GitHub"></a></li>
+          <li><a href="https://www.facebook.com/quoc.trann05" target="_blank" rel="noopener"><img src="pics/icons/facebook.svg" alt="Facebook"></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">© <span id="year">2025</span> • TRẦN LÊ MINH QUỐC</div>
+  </footer>
+
+<script>
+(() => {
+  const y = document.getElementById('year');
+  if (y) y.textContent = new Date().getFullYear();
+  const b = document.querySelector('.back-button');
+  const f = new URLSearchParams(location.search).get('from');
+  b && b.addEventListener('click', e => {
+    e.preventDefault();
+    if (f) location.replace(f);
+    else if (history.length > 1) history.back();
+    else location.href = 'blog.html';
+  });
+})();
+</script>
+</body>
+</html>

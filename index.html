@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Q_Blog</title>
+  <meta name="description" content="Blog chia sẻ kiến thức lập trình: Java, JavaScript, TCP/UDP, Socket, REST API, WebSocket." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>html{scroll-behavior:smooth}</style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header header-fixed">
+    <div class="container nav">
+      <a class="brand" href="#hero" aria-label="Trang chủ">
+        <img class="logo" src="pics/logo.png" onerror="this.style.display='none'">
+        <span class="brand-text">Q_Blog</span>
+      </a>
+      <nav aria-label="Điều hướng chính" class="menu">
+        <a class="nav-link" href="#hero" data-target="hero">Home</a>
+        <a class="nav-link" href="about.html" data-target="gioi-thieu">Giới thiệu</a>
+        <a class="nav-link" href="blog.html" data-target="blog">Blog</a>
+        <a class="nav-link" href="contact.html" data-target="contact">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="snap-container">
+
+    <section id="hero" class="section snap-start reveal">
+  <div class="container hero-grid">
+    <!-- Tiêu đề chính giữa -->
+    <div class="hero-left">
+      <h1 class="title-xl">HỌC HÔM NAY - DẪN LỐI NGÀY MAI</h1>
+      <p class="lead">
+          Blog cá nhân về lập trình mạng — nơi mình chia sẻ kiến thức, ví dụ thực tế và những điều thú vị quanh <strong>CNTT</strong>.
+      </p>
+    </div>
+
+    <!-- Hai card canh giữa, nằm dưới -->
+    <!-- Hai hàng chủ đề toàn chiều ngang, có hình ảnh -->
+<div class="topics">
+
+  <!-- Row 1: Java -->
+  <!-- Row 1: Java Networking -->
+<section class="topic-row">
+  <figure class="topic-media">
+    <img src="pics/java-network.png" alt="Lập trình socket với Java" loading="lazy">
+  </figure>
+  <article class="topic-content">
+    <h2>Khai Phá Sức Mạnh Mạng Trong Java</h2>
+    <p>
+      Java không chỉ mạnh ở hướng đối tượng mà còn là nền tảng vững chắc cho lập trình mạng. 
+      Từ việc tạo socket kết nối, truyền dữ liệu giữa client và server cho đến quản lý nhiều luồng song song – 
+      tất cả đều được hỗ trợ mạnh mẽ bởi các thư viện sẵn có.
+      Mỗi dự án nhỏ là một bài học giúp bạn hiểu sâu hơn cách Internet hoạt động và 
+      cách các ứng dụng giao tiếp phía sau những dòng code tưởng chừng đơn giản.
+    </p>
+    <ul class="list">
+      <li>Hiểu rõ quy trình thiết lập kết nối giữa <b>Client</b> và <b>Server</b></li>
+      <li>Xây dựng các chương trình chat, gửi nhận file trong LAN</li>
+      <li>Sử dụng <b>Thread</b> để xử lý đa người dùng cùng lúc</li>
+      <li>Ứng dụng <b>Socket Programming</b> để mô phỏng dịch vụ thực tế</li>
+      <li>Từng bước tối ưu hiệu suất với <b>Java NIO</b> và <b>Buffer</b></li>
+    </ul>
+  </article>
+</section>
+
+<!-- Row 2: JavaScript Networking (reverse layout) -->
+<section class="topic-row reverse">
+  <figure class="topic-media">
+    <img src="pics/js-realtime.png" alt="Realtime Node.js và WebSocket" loading="lazy">
+  </figure>
+  <article class="topic-content">
+    <h2>JavaScript & Thế Giới Ứng Dụng Realtime</h2>
+    <p>
+      JavaScript ngày nay không chỉ là ngôn ngữ cho giao diện web. 
+      Với <b>Node.js</b> và <b>WebSocket</b>, bạn có thể xây dựng hệ thống realtime như trò chuyện trực tuyến, 
+      thông báo tức thì, hoặc đồng bộ dữ liệu giữa nhiều thiết bị trong nháy mắt.
+      JavaScript không còn giới hạn trong trình duyệt — 
+      nó là chiếc cầu nối giữa backend, frontend và cả hệ thống mạng hiện đại.
+    </p>
+    <ul class="list">
+      <li>Nắm vững mô hình bất đồng bộ của <b>Node.js</b></li>
+      <li>Xây dựng <b>REST API</b> và tích hợp với cơ sở dữ liệu</li>
+      <li>Tạo kết nối realtime giữa client và server bằng <b>Socket.IO</b></li>
+      <li>Phát triển ứng dụng có thể mở rộng và chạy đa nền tảng</li>
+      <li>Triển khai và theo dõi hiệu suất qua <b>Cloud Services</b></li>
+    </ul>
+  </article>
+</section>
+
+
+  <!-- Row 3: Kinh nghiệm học tập -->
+<section class="topic-row">
+  <figure class="topic-media">
+    <img src="pics/learning-tips.jpg" alt="Kinh nghiệm học lập trình hiệu quả" loading="lazy">
+  </figure>
+
+  <article class="topic-content">
+    <h2>Kinh Nghiệm Học Tập & Phát Triển Bản Thân</h2>
+    <p>
+      Học lập trình không chỉ là nhớ cú pháp mà là rèn tư duy giải quyết vấn đề. 
+      Trên hành trình này, mình đã đúc kết nhiều kinh nghiệm thực tế — 
+      từ việc tự học, đặt mục tiêu ngắn hạn, đến cách duy trì động lực mỗi ngày.
+      Mình tin rằng, điều quan trọng nhất không phải là tốc độ bạn học, 
+      mà là sự <b>kiên trì và khả năng tự cải thiện</b> mỗi ngày.
+    </p>
+
+    <ul class="list">
+      <li>🎯 Bắt đầu với dự án nhỏ, học qua việc <b>làm thật</b></li>
+      <li>📚 Ghi chú, tổng hợp kiến thức sau mỗi buổi học để dễ hệ thống lại</li>
+      <li>💬 Tham gia cộng đồng, chia sẻ và học hỏi từ người khác</li>
+      <li>🧠 Kết hợp lý thuyết với thực hành qua <b>mini project</b></li>
+      <li>🔥 Duy trì thói quen học mỗi ngày, dù chỉ 30 phút</li>
+    </ul>
+  </article>
+</section>
+
+
+</div>
+
+  </div>
+</section>
+
+    <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <h2>TRẦN LÊ MINH QUỐC</h2>
+      </div>
+      <div>
+        <h2>Điều hướng</h2>
+        <ul class="foot-list">
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Kết nối</h2>
+        <ul class="foot-list">
+  <li>
+    <a href="https://github.com/quoctran0502" target="_blank" rel="noopener">
+      <img src="pics/icons/github.svg" alt="GitHub">
+    </a>
+  </li>
+  <li>
+    <a href="https://www.facebook.com/quoc.trann05" target="_blank" rel="noopener">
+      <img src="pics/icons/facebook.svg" alt="Facebook">
+    </a>
+  </li>
+</ul>
+
+      </div>
+    </div>
+    <div class="copyright">© <span id="year">2025</span> • TRẦN LÊ MINH QUỐC</div>
+  </footer>
+
+  </main>
+
+  <script>
+    // năm
+    const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear();
+
+    // active nav & reveal
+    const navLinks=document.querySelectorAll('.nav-link');
+    const sections=[...document.querySelectorAll('.section')];
+    const io=new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('revealed');
+          const id=entry.target.id;
+          navLinks.forEach(a=>{
+            a.removeAttribute('aria-current');
+            if(a.getAttribute('href')==='#'+id) a.setAttribute('aria-current','page');
+          });
+        }
+      });
+    },{threshold:0.5});
+    sections.forEach(sec=>io.observe(sec));
+
+    // smooth scroll bù header fixed
+    const header=document.querySelector('.header-fixed');
+    const headerH=()=>header?header.offsetHeight:0;
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click',e=>{
+        const id=a.getAttribute('href').slice(1);
+        const el=document.getElementById(id);
+        if(!el) return;
+        e.preventDefault();
+        const top=el.getBoundingClientRect().top+window.scrollY-headerH();
+        window.scrollTo({top,behavior:'smooth'});
+        history.replaceState(null,'',`#${id}`);
+      });
+    });
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      document.documentElement.classList.add('reduced-motion');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!doctype html><html lang="vi"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SQL Server – Từ truy vấn tới tối ưu</title>
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="post.css">
+</head><body>
+<header class="site-header"><div class="container nav">
+  <a class="brand" href="index.html"><img class="logo" src="pics/logo.png" onerror="this.style.display='none'"><span class="brand-text">TranLeMinhQuoc</span></a>
+  <nav class="menu"><a href="index.html#hero">Home</a><a href="about.html">Giới thiệu</a><a href="blog.html">Blog</a><a href="contact.html">Liên hệ</a></nav>
+</div></header>
+
+<main><article class="post-article">
+  <header class="post-head">
+    <h1>Làm Việc Với Cơ Sở Dữ Liệu SQL Server</h1>
+    <div class="meta">Năm 3 • 2024</div>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- 1 -->
+  <section>
+    <div class="section-title"><span class="badge">1</span><h2>CRUD cơ bản: từ tạo bảng tới truy vấn</h2></div>
+    <pre class="code"><code>
+<span class="token.comment">-- Tạo bảng & dữ liệu mẫu</span>
+CREATE TABLE dbo.Jobs(
+  Id     INT PRIMARY KEY,
+  Title  NVARCHAR(100) NOT NULL,
+  Salary INT           NOT NULL,
+  DeptId INT           NULL
+);
+
+INSERT INTO dbo.Jobs(Id, Title, Salary, DeptId) VALUES
+(1, N'Backend Dev', 1500, 10),
+(2, N'QA Engineer', 1000, 20),
+(3, N'Data Analyst',1800, 10);
+
+<span class="token.comment">-- Đọc</span>
+SELECT Title, Salary FROM dbo.Jobs
+WHERE Salary &gt;= 1200
+ORDER BY Salary DESC;
+
+<span class="token.comment">-- Cập nhật</span>
+UPDATE dbo.Jobs SET Salary = Salary + 100 WHERE Id = 2;
+
+<span class="token.comment">-- Xoá</span>
+DELETE FROM dbo.Jobs WHERE Id = 3;
+    </code></pre>
+    <div class="block">
+      <h3>Mẹo nhanh</h3>
+      <ul>
+        <li>Đặt schema rõ ràng: <code>dbo.TableName</code>.</li>
+        <li>Dùng kiểu dữ liệu phù hợp (ví dụ: tiền lương có thể dùng <code>DECIMAL(18,2)</code> nếu cần phần thập phân).</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="section-title"><span class="badge">2</span><h2>JOIN &amp; GROUP BY: kết nối & tổng hợp</h2></div>
+    <pre class="code"><code>
+<span class="token.comment">-- Bảng phòng ban</span>
+CREATE TABLE dbo.Departments(
+  DeptId INT PRIMARY KEY,
+  Name   NVARCHAR(80) NOT NULL
+);
+
+INSERT INTO dbo.Departments VALUES (10,N'Engineering'),(20,N'QA');
+
+<span class="token.comment">-- JOIN: lấy Job + tên phòng ban</span>
+SELECT j.Title, d.Name AS Dept, j.Salary
+FROM dbo.Jobs j
+LEFT JOIN dbo.Departments d ON d.DeptId = j.DeptId
+ORDER BY j.Salary DESC;
+
+<span class="token.comment">-- GROUP BY: lương trung bình theo phòng ban</span>
+SELECT d.Name AS Dept, AVG(CAST(j.Salary AS DECIMAL(18,2))) AS AvgSalary
+FROM dbo.Jobs j
+JOIN dbo.Departments d ON d.DeptId = j.DeptId
+GROUP BY d.Name
+ORDER BY AvgSalary DESC;
+    </code></pre>
+    <div class="block">
+      <h3>Tip</h3>
+      <ul>
+        <li><code>LEFT JOIN</code> giữ bản ghi bên trái kể cả khi không có match.</li>
+        <li>Dùng <code>CAST</code>/<code>CONVERT</code> khi cần độ chính xác số học trong tổng hợp.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="section-title"><span class="badge">3</span><h2>Index &amp; khóa (PK, UK, FK): chạy nhanh & dữ liệu chuẩn</h2></div>
+    <pre class="code"><code>
+<span class="token.comment">-- Index cho cột thường lọc/sắp xếp</span>
+CREATE INDEX IX_Jobs_Salary ON dbo.Jobs(Salary);
+
+<span class="token.comment">-- Khóa ngoại bảo toàn tham chiếu</span>
+ALTER TABLE dbo.Jobs
+ADD CONSTRAINT FK_Jobs_Departments
+FOREIGN KEY (DeptId) REFERENCES dbo.Departments(DeptId);
+
+<span class="token.comment">-- Khóa duy nhất (unique) cho Title trong 1 phòng ban</span>
+CREATE UNIQUE INDEX UX_Jobs_Title_Dept ON dbo.Jobs(Title, DeptId);
+    </code></pre>
+    <table class="table" aria-label="So sánh index">
+      <thead><tr><th>Loại</th><th>Mục đích</th><th>Lưu ý</th></tr></thead>
+      <tbody>
+        <tr><td>Clustered (PK)</td><td>Xếp dữ liệu theo khóa chính</td><td>1 bảng chỉ có 1 clustered index</td></tr>
+        <tr><td>Nonclustered</td><td>Tăng tốc WHERE/ORDER BY/JOIN</td><td>Đừng lạm dụng; ghi chậm hơn</td></tr>
+        <tr><td>Unique</td><td>Ngăn dữ liệu trùng</td><td>Hợp lệ hóa business rule</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="section-title"><span class="badge">4</span><h2>Giao dịch & mức cô lập: dữ liệu nhất quán</h2></div>
+    <pre class="code"><code>
+BEGIN TRAN;
+
+UPDATE dbo.Jobs SET Salary = Salary + 200 WHERE Id = 1;
+
+<span class="token.comment">-- Kiểm tra tạm</span>
+SELECT * FROM dbo.Jobs WHERE Id = 1;
+
+<span class="token.comment">-- Lưu (COMMIT) hoặc hủy (ROLLBACK)</span>
+COMMIT;
+-- ROLLBACK;
+    </code></pre>
+    <pre class="code"><code>
+<span class="token.comment">-- Đặt mức cô lập cho phiên làm việc</span>
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+-- READ UNCOMMITTED (bẩn, nhưng nhanh) / REPEATABLE READ / SERIALIZABLE / SNAPSHOT
+    </code></pre>
+    <div class="block">
+      <h3>Ghi nhớ</h3>
+      <ul>
+        <li>Gom thao tác liên quan vào 1 transaction → tránh trạng thái dở dang.</li>
+        <li>Chọn isolation cấp phù hợp giữa tính đúng & hiệu năng.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="section-title"><span class="badge">5</span><h2>Execution Plan & tối ưu truy vấn</h2></div>
+    <pre class="code"><code>
+<span class="token.comment">-- Bật xem kế hoạch thực thi</span>
+SET SHOWPLAN_ALL ON;   <span class="token.comment">-- chỉ hiển thị plan, không thực thi</span>
+-- hoặc dùng GUI: Include Actual Execution Plan (Ctrl+M) trong SSMS
+    </code></pre>
+    <div class="block">
+      <h3>Điểm cần soi</h3>
+      <ul>
+        <li><strong>Scan</strong> toàn bảng? → thêm/tinh chỉnh index.</li>
+        <li>Key Lookup lặp nhiều? → cân nhắc <em>covering index</em> (INCLUDE cột).</li>
+        <li>Hàm trên cột ở WHERE (ví dụ: <code>WHERE YEAR(CreatedAt)=2024</code>) → khó dùng index, hãy rewrite: <code>CreatedAt &gt;= '2024-01-01' AND &lt; '2025-01-01'</code>.</li>
+      </ul>
+    </div>
+    <pre class="code"><code>
+<span class="token.comment">-- Covering index với INCLUDE</span>
+CREATE INDEX IX_Jobs_Dept_Salary
+ON dbo.Jobs(DeptId, Salary)
+INCLUDE(Title);
+    </code></pre>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <div class="section-title"><span class="badge">6</span><h2>Checklist thực chiến</h2></div>
+    <ul>
+      <li>Chuẩn hoá tối thiểu 3NF; nhưng khi đọc nặng → cân nhắc denormalize có kiểm soát.</li>
+      <li>Chỉ chọn cột cần dùng (<code>SELECT *</code> làm chậm & khó cover index).</li>
+      <li>Thêm index cho cột lọc/sort thường xuyên; kiểm tra lại sau khi dữ liệu tăng.</li>
+      <li>Dùng transaction cho thao tác nhiều bước; log lỗi và rollback khi cần.</li>
+      <li>Thi thoảng <em>UPDATE STATISTICS</em> để tối ưu kế hoạch thực thi.</li>
+    </ul>
+
+    <nav style="margin-top:16px"><a href="#" class="btn ghost back-button">← Quay lại</a></nav>
+  </section>
+
+  <!-- Related -->
+  <section class="related"><h2>Related Posts</h2>
+    <div class="rel-grid">
+      <article class="rel-card">
+        <img src="pics/aspnetcore.png" alt="ASP.NET Core MVC">
+        <div class="rel-body">
+          <div class="rel-title">ASP.NET Core MVC</div>
+          <div class="rel-meta">Web • MVC</div>
+          <p class="rel-excerpt">Kết nối EF Core, repository pattern.</p>
+          <a class="rel-btn" href="post7.html?from=blog.html">Read More</a>
+        </div>
+      </article>
+      <article class="rel-card">
+        <img src="pics/restapi.png" alt="RESTful API">
+        <div class="rel-body">
+          <div class="rel-title">RESTful API</div>
+          <div class="rel-meta">API</div>
+          <p class="rel-excerpt">Expose dữ liệu an toàn & versioning.</p>
+          <a class="rel-btn" href="post8.html?from=blog.html">Read More</a>
+        </div>
+      </article>
+      <article class="rel-card">
+        <img src="pics/javascript_basic.jpg" alt="JavaScript">
+        <div class="rel-body">
+          <div class="rel-title">JavaScript</div>
+          <div class="rel-meta">Web • JS</div>
+          <p class="rel-excerpt">Hiển thị & tương tác với dữ liệu.</p>
+          <a class="rel-btn" href="post5.html?from=blog.html">Read More</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+</article></main>
+
+<footer class="site-footer">
+    <div class="container footer-grid">
+      <div><h2>TRẦN LÊ MINH QUỐC</h2></div>
+      <div>
+        <h2>Điều hướng</h2>
+        <ul class="foot-list">
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Kết nối</h2>
+        <ul class="foot-list">
+          <li><a href="https://github.com/quoctran0502" target="_blank" rel="noopener"><img src="pics/icons/github.svg" alt="GitHub"></a></li>
+          <li><a href="https://www.facebook.com/quoc.trann05" target="_blank" rel="noopener"><img src="pics/icons/facebook.svg" alt="Facebook"></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">© <span id="year">2025</span> • TRẦN LÊ MINH QUỐC</div>
+  </footer><script>
+(() => {
+  const y=document.getElementById('year'); y&&(y.textContent=new Date().getFullYear());
+  const b=document.querySelector('.back-button');
+  const f=new URLSearchParams(location.search).get('from');
+  b&&b.addEventListener('click',e=>{
+    e.preventDefault();
+    if(f){ location.replace(f); }
+    else if(history.length>1){ history.back(); }
+    else{ location.href='blog.html'; }
+  });
+})();
+</script>
+</body></html>

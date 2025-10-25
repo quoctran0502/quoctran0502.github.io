@@ -1,0 +1,195 @@
+<!doctype html><html lang="vi"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>JavaScript – Linh Hồn Của Website</title>
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="post.css">
+</head><body>
+<header class="site-header"><div class="container nav">
+  <a class="brand" href="index.html"><img class="logo" src="pics/logo.png" onerror="this.style.display='none'"><span class="brand-text">TranLeMinhQuoc</span></a>
+  <nav class="menu"><a href="index.html#hero">Home</a><a href="about.html">Giới thiệu</a><a href="blog.html">Blog</a><a href="contact.html">Liên hệ</a></nav>
+</div></header>
+
+<main><article class="post-article">
+  <header class="post-head">
+    <h1>JavaScript – Linh Hồn Của Website</h1>
+    <div class="meta">Năm 2 • 2023</div>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- 1 -->
+  <section>
+    <div class="section-title"><span class="badge">1</span><h2>Sự kiện & DOM: bắt đầu từ tương tác nhỏ</h2></div>
+    <p>JS giúp UI “biết phản hồi” qua sự kiện. Mẹo hay là dùng <em>event delegation</em> để tránh gán quá nhiều listener.</p>
+    <pre class="code"><code>
+<span class="token.comment">// Toggle dark-mode và lắng nghe click cho danh sách động</span>
+<span class="token.keyword">const</span> root = document.documentElement;
+<span class="token.keyword">const</span> btn = document.querySelector(<span class="token.string">'.js-toggle'</span>);
+btn.addEventListener(<span class="token.string">'click'</span>, () =&gt; {
+  root.classList.toggle(<span class="token.string">'dark'</span>);
+});
+
+<span class="token.keyword">const</span> list = document.querySelector(<span class="token.string">'.todo-list'</span>);
+list.addEventListener(<span class="token.string">'click'</span>, (e) =&gt; {
+  <span class="token.keyword">const</span> item = e.target.closest(<span class="token.string">'.todo-item'</span>);
+  <span class="token.keyword">if</span> (!item) <span class="token.keyword">return</span>;
+  item.classList.toggle(<span class="token.string">'done'</span>);
+});
+    </code></pre>
+    <div class="block">
+      <h3>Mẹo</h3>
+      <ul>
+        <li>Ưu tiên thao tác qua container (delegation) nếu danh sách phần tử được tạo động.</li>
+        <li>Đừng nhồi logic vào HTML inline; tách JS ra file riêng.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="section-title"><span class="badge">2</span><h2>Gọi API với <code>fetch</code> + <code>async/await</code></h2></div>
+    <p>Dùng <code>try/catch</code> & kiểm tra <code>res.ok</code> để xử lý lỗi rõ ràng.</p>
+    <pre class="code"><code>
+<span class="token.keyword">async function</span> loadJobs(){
+  <span class="token.keyword">try</span> {
+    <span class="token.keyword">const</span> res = <span class="token.keyword">await</span> fetch(<span class="token.string">'/api/jobs?limit=5'</span>);
+    <span class="token.keyword">if</span> (!res.ok) <span class="token.keyword">throw</span> <span class="token.keyword">new</span> Error(<span class="token.string">`HTTP ${res.status}`</span>);
+    <span class="token.keyword">const</span> data = <span class="token.keyword">await</span> res.json();
+    renderJobs(data);
+  } <span class="token.keyword">catch</span> (err) {
+    showToast(<span class="token.string">'Không tải được dữ liệu'</span>, <span class="token.string">'error'</span>);
+    console.error(err);
+  }
+}
+
+<span class="token.keyword">function</span> renderJobs(list){
+  <span class="token.keyword">const</span> wrap = document.querySelector(<span class="token.string">'.jobs'</span>);
+  wrap.innerHTML = list.map(j =&gt; <span class="token.string">`
+    &lt;article class="job card"&gt;
+      &lt;div class="post-title"&gt;${j.title}&lt;/div&gt;
+      &lt;p class="muted"&gt;${j.company} • ${j.location}&lt;/p&gt;
+    &lt;/article&gt;`</span>).join(<span class="token.string">''</span>);
+}
+
+loadJobs();
+    </code></pre>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="section-title"><span class="badge">3</span><h2>Quản lý state nhỏ: LocalStorage & đồng bộ UI</h2></div>
+    <p>Lưu trạng thái nhẹ (ví dụ: theme, bộ lọc) vào <code>localStorage</code> để giữ trải nghiệm nhất quán.</p>
+    <pre class="code"><code>
+<span class="token.keyword">const</span> KEY = <span class="token.string">'pref.theme'</span>;
+
+<span class="token.keyword">function</span> applyTheme(t){
+  document.documentElement.dataset.theme = t;  <span class="token.comment">// [data-theme="dark"] trong CSS</span>
+}
+
+<span class="token.keyword">function</span> initTheme(){
+  <span class="token.keyword">const</span> saved = localStorage.getItem(KEY) || <span class="token.string">'dark'</span>;
+  applyTheme(saved);
+}
+
+<span class="token.keyword">function</span> toggleTheme(){
+  <span class="token.keyword">const</span> cur = document.documentElement.dataset.theme;
+  <span class="token.keyword">const</span> next = cur === <span class="token.string">'dark'</span> ? <span class="token.string">'light'</span> : <span class="token.string">'dark'</span>;
+  applyTheme(next);
+  localStorage.setItem(KEY, next);
+}
+
+initTheme();
+document.querySelector(<span class="token.string">'.js-toggle'</span>).addEventListener(<span class="token.string">'click'</span>, toggleTheme);
+    </code></pre>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="section-title"><span class="badge">4</span><h2>Module hoá: tách file và import</h2></div>
+    <p>Từ ES Modules, bạn có thể chia nhỏ mã và import gọn gàng (trình duyệt hiện đại hỗ trợ tốt).</p>
+    <pre class="code"><code>
+<span class="token.comment">// utils/dom.js</span>
+<span class="token.keyword">export function</span> $(sel, parent = document){ <span class="token.keyword">return</span> parent.querySelector(sel); }
+<span class="token.keyword">export function</span> $all(sel, parent = document){ <span class="token.keyword">return</span> [...parent.querySelectorAll(sel)]; }
+
+<span class="token.comment">// main.js</span>
+<span class="token.keyword">import</span> { $, $all } <span class="token.keyword">from</span> <span class="token.string">'./utils/dom.js'</span>;
+$(<span class="token.string">'.hello'</span>).textContent = <span class="token.string">'Xin chào!'</span>;
+    </code></pre>
+    <pre class="code"><code>
+&lt;!-- index.html --&gt;
+&lt;script type="module" src="main.js"&gt;&lt;/script&gt;
+    </code></pre>
+    <div class="block">
+      <h3>Mẹo</h3>
+      <ul>
+        <li>Đặt <code>type="module"</code> để dùng <code>import/export</code> trực tiếp.</li>
+        <li>Với dự án lớn: dùng bundler (Vite, Webpack) để tối ưu.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="section-title"><span class="badge">5</span><h2>Lỗi thường gặp & cách né</h2></div>
+    <table class="table" aria-label="Các lỗi JS phổ biến">
+      <thead><tr><th>Vấn đề</th><th>Triệu chứng</th><th>Giải pháp</th></tr></thead>
+      <tbody>
+        <tr><td>Null/undefined</td><td><code>Cannot read ... of null</code></td><td>Kiểm tra tồn tại, dùng optional chaining <code>?.</code></td></tr>
+        <tr><td>Race khi gọi API</td><td>Dữ liệu chồng chéo</td><td>Huỷ request cũ (AbortController), khoá UI khi đang tải</td></tr>
+        <tr><td>DOM reflow quá nhiều</td><td>Giật lag</td><td>Batch cập nhật, sử dụng fragment hoặc <code>innerHTML</code> 1 lần</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="divider"></div>
+
+  <section>
+    <div class="section-title"><span class="badge">6</span><h2>Kết luận</h2></div>
+    <p>JS làm cầu nối giữa người dùng và dữ liệu. Làm chủ DOM, sự kiện, fetch/async và tổ chức module sẽ giúp bạn tự tin xây dựng front-end hiện đại.</p>
+    <nav style="margin-top:16px"><a href="#" class="btn ghost back-button">← Quay lại</a></nav>
+  </section>
+
+  <!-- Related -->
+  <section class="related"><h2>Related Posts</h2>
+    <div class="rel-grid">
+      <article class="rel-card"><img src="pics/html_css.png" alt="HTML CSS"><div class="rel-body"><div class="rel-title">HTML & CSS</div><div class="rel-meta">Web • UI</div><p class="rel-excerpt">Xây layout đẹp.</p><a class="rel-btn" href="post4.html?from=blog.html">Read More</a></div></article>
+      <article class="rel-card"><img src="pics/restapi.png" alt="REST API"><div class="rel-body"><div class="rel-title">RESTful API</div><div class="rel-meta">API</div><p class="rel-excerpt">Fetch dữ liệu JSON.</p><a class="rel-btn" href="post8.html?from=blog.html">Read More</a></div></article>
+      <article class="rel-card"><img src="pics/sqlserver.png" alt="SQL Server"><div class="rel-body"><div class="rel-title">SQL Server</div><div class="rel-meta">DB</div><p class="rel-excerpt">Lưu & truy xuất.</p><a class="rel-btn" href="post6.html?from=blog.html">Read More</a></div></article>
+    </div>
+  </section>
+</article></main>
+
+<footer class="site-footer">
+    <div class="container footer-grid">
+      <div><h2>TRẦN LÊ MINH QUỐC</h2></div>
+      <div>
+        <h2>Điều hướng</h2>
+        <ul class="foot-list">
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Kết nối</h2>
+        <ul class="foot-list">
+          <li><a href="https://github.com/quoctran0502" target="_blank" rel="noopener"><img src="pics/icons/github.svg" alt="GitHub"></a></li>
+          <li><a href="https://www.facebook.com/quoc.trann05" target="_blank" rel="noopener"><img src="pics/icons/facebook.svg" alt="Facebook"></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">© <span id="year">2025</span> • TRẦN LÊ MINH QUỐC</div>
+  </footer><script>
+(() => {
+  const y=document.getElementById('year'); y&&(y.textContent=new Date().getFullYear());
+  const b=document.querySelector('.back-button');
+  const f=new URLSearchParams(location.search).get('from');
+  b&&b.addEventListener('click',e=>{
+    e.preventDefault();
+    if(f){ location.replace(f); }
+    else if(history.length>1){ history.back(); }
+    else{ location.href='blog.html'; }
+  });
+})();
+</script>
+</body></html>

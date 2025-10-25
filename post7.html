@@ -1,0 +1,300 @@
+<!doctype html><html lang="vi"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ASP.NET Core MVC – Tổ chức & Kết nối dữ liệu</title>
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="post.css">
+</head><body>
+<header class="site-header"><div class="container nav">
+  <a class="brand" href="index.html"><img class="logo" src="pics/logo.png" onerror="this.style.display='none'"><span class="brand-text">TranLeMinhQuoc</span></a>
+  <nav class="menu"><a href="index.html#hero">Home</a><a href="about.html">Giới thiệu</a><a href="blog.html">Blog</a><a href="contact.html">Liên hệ</a></nav>
+</div></header>
+
+<main><article class="post-article">
+  <header class="post-head">
+    <h1>Xây Dựng Ứng Dụng Web Với ASP.NET Core MVC</h1>
+    <div class="meta">Năm 3 • 2024</div>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- 1 -->
+  <section>
+    <div class="section-title"><span class="badge">1</span><h2>Cấu trúc dự án & vòng đời request</h2></div>
+    <p>MVC tách rõ <em>Model</em> (dữ liệu/nghiệp vụ), <em>View</em> (giao diện Razor) và <em>Controller</em> (điều phối). Request đi qua <strong>Middleware pipeline</strong> → chọn route → gọi controller/action → trả View/JSON.</p>
+    <table class="table" aria-label="Cấu trúc thư mục gợi ý">
+      <thead><tr><th>Thư mục</th><th>Nội dung</th></tr></thead>
+      <tbody>
+        <tr><td><code>Controllers/</code></td><td>Controller kế thừa <code>Controller</code></td></tr>
+        <tr><td><code>Models/</code></td><td>Entity, ViewModel, DTO</td></tr>
+        <tr><td><code>Data/</code></td><td><code>AppDbContext</code>, migration</td></tr>
+        <tr><td><code>Views/</code></td><td>Razor views, partials, layouts</td></tr>
+        <tr><td><code>wwwroot/</code></td><td>CSS, JS, ảnh tĩnh</td></tr>
+      </tbody>
+    </table>
+    <div class="block"><h3>Mẹo</h3><ul>
+      <li>Đặt cấu trúc theo <em>feature</em> (Features/Jobs/…) nếu dự án lớn.</li>
+      <li>Đưa logic nghiệp vụ sang <code>Service</code> hoặc <code>Domain</code> để Controller gọn.</li>
+    </ul></div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="section-title"><span class="badge">2</span><h2>Routing & Endpoints (Minimal hosting)</h2></div>
+    <pre class="code"><code>
+<span class="token.comment">// Program.cs</span>
+<span class="token.keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+<span class="token.comment">// MVC + Razor runtime compilation (tùy chọn)</span>
+builder.Services.AddControllersWithViews();
+
+<span class="token.keyword">var</span> app = builder.Build();
+
+<span class="token.comment">// Middleware cơ bản</span>
+<span class="token.keyword">if</span> (!app.Environment.IsDevelopment()) { app.UseExceptionHandler(<span class="token.string">"/Home/Error"</span>); }
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+<span class="token.comment">// Định nghĩa route mặc định</span>
+app.MapControllerRoute(
+    name: <span class="token.string">"default"</span>,
+    pattern: <span class="token.string">"{controller=Home}/{action=Index}/{id?}"</span>);
+
+app.Run();
+    </code></pre>
+    <div class="block"><h3>Lưu ý</h3><ul>
+      <li>Thứ tự middleware <strong>quan trọng</strong> (Auth phải trước MapControllerRoute).</li>
+      <li>Có thể thêm area: <code>{area:exists}/{controller=Home}/{action=Index}/{id?}</code>.</li>
+    </ul></div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="section-title"><span class="badge">3</span><h2>Controller, DI & Service/Repository</h2></div>
+    <pre class="code"><code>
+<span class="token.comment">// Services/IJobService.cs</span>
+<span class="token.keyword">public interface</span> IJobService {
+  Task&lt;IEnumerable&lt;JobVm&gt;&gt; GetTopAsync(<span class="token.keyword">int</span> take);
+}
+
+<span class="token.comment">// Services/JobService.cs</span>
+<span class="token.keyword">public class</span> JobService : IJobService {
+  <span class="token.keyword">private readonly</span> AppDbContext _db;
+  <span class="token.keyword">public</span> JobService(AppDbContext db){ _db = db; }
+  <span class="token.keyword">public async</span> Task&lt;IEnumerable&lt;JobVm&gt;&gt; GetTopAsync(<span class="token.keyword">int</span> take) {
+    <span class="token.keyword">return await</span> _db.Jobs
+      .OrderByDescending(x =&gt; x.Salary)
+      .Select(x =&gt; <span class="token.keyword">new</span> JobVm{ Id=x.Id, Title=x.Title, Salary=x.Salary })
+      .Take(take).ToListAsync();
+  }
+}
+    </code></pre>
+    <pre class="code"><code>
+<span class="token.comment">// Program.cs (đăng ký DI)</span>
+builder.Services.AddScoped&lt;IJobService, JobService&gt;();
+    </code></pre>
+    <pre class="code"><code>
+<span class="token.comment">// Controllers/JobsController.cs</span>
+<span class="token.keyword">public class</span> JobsController : Controller {
+  <span class="token.keyword">private readonly</span> IJobService _svc;
+  <span class="token.keyword">public</span> JobsController(IJobService svc){ _svc = svc; }
+
+  <span class="token.keyword">public async</span> Task&lt;IActionResult&gt; Index(){
+    <span class="token.keyword">var</span> vm = <span class="token.keyword">await</span> _svc.GetTopAsync(20);
+    <span class="token.keyword">return</span> View(vm);
+  }
+}
+    </code></pre>
+    <div class="block"><h3>Best-practice</h3><ul>
+      <li>Inject qua <strong>constructor</strong>; tránh <code>ServiceLocator</code>.</li>
+      <li>Controller mảnh, mời Service xử lý nghiệp vụ.</li>
+    </ul></div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="section-title"><span class="badge">4</span><h2>EF Core: DbContext, Entity & Migration</h2></div>
+    <pre class="code"><code>
+<span class="token.comment">// Data/AppDbContext.cs</span>
+<span class="token.keyword">public class</span> AppDbContext : DbContext {
+  <span class="token.keyword">public</span> AppDbContext(DbContextOptions&lt;AppDbContext&gt; opt) : <span class="token.keyword">base</span>(opt) {}
+  <span class="token.keyword">public</span> DbSet&lt;Job&gt; Jobs =&gt; <span class="token.keyword">set</span>;
+  <span class="token.keyword">protected override void</span> OnModelCreating(ModelBuilder b){
+    b.Entity&lt;Job&gt;().Property(p =&gt; p.Title).HasMaxLength(100).IsRequired();
+    b.Entity&lt;Job&gt;().HasIndex(p =&gt; p.Salary);
+  }
+}
+<span class="token.keyword">public class</span> Job {
+  <span class="token.keyword">public int</span> Id { <span class="token.keyword">get</span>; <span class="token.keyword">set</span>; }
+  <span class="token.keyword">public string</span> Title { <span class="token.keyword">get</span>; <span class="token.keyword">set</span>; } = <span class="token.keyword">string</span>.Empty;
+  <span class="token.keyword">public int</span> Salary { <span class="token.keyword">get</span>; <span class="token.keyword">set</span>; }
+}
+    </code></pre>
+    <pre class="code"><code>
+<span class="token.comment">// Program.cs – cấu hình kết nối</span>
+<span class="token.keyword">var</span> cs = builder.Configuration.GetConnectionString(<span class="token.string">"Default"</span>);
+builder.Services.AddDbContext&lt;AppDbContext&gt;(o =&gt; o.UseSqlServer(cs));
+    </code></pre>
+    <pre class="code"><code>
+<span class="token.comment"># Tạo migration & cập nhật DB</span>
+dotnet ef migrations add Init
+dotnet ef database update
+    </code></pre>
+    <div class="block"><h3>Mẹo</h3><ul>
+      <li>Dùng Fluent API cho rule phức tạp; tránh nhồi annotation quá nhiều.</li>
+      <li>Seed dữ liệu trong migration hoặc <code>OnModelCreating</code> (HasData).</li>
+    </ul></div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="section-title"><span class="badge">5</span><h2>ViewModel &amp; Validation (ModelState)</h2></div>
+    <pre class="code"><code>
+<span class="token.comment">// Models/JobVm.cs</span>
+<span class="token.keyword">public class</span> JobVm {
+  [Required, StringLength(100)]
+  <span class="token.keyword">public string</span> Title { <span class="token.keyword">get</span>; <span class="token.keyword">set</span>; } = <span class="token.keyword">string</span>.Empty;
+  [Range(0, 1000000)]
+  <span class="token.keyword">public int</span> Salary { <span class="token.keyword">get</span>; <span class="token.keyword">set</span>; }
+}
+    </code></pre>
+    <pre class="code"><code>
+<span class="token.comment">// JobsController.cs – Create (POST)</span>
+[HttpPost]
+<span class="token.keyword">public async</span> Task&lt;IActionResult&gt; Create(JobVm vm){
+  <span class="token.keyword">if</span> (!ModelState.IsValid) <span class="token.keyword">return</span> View(vm);
+  _db.Add(<span class="token.keyword">new</span> Job{ Title = vm.Title, Salary = vm.Salary });
+  <span class="token.keyword">await</span> _db.SaveChangesAsync();
+  <span class="token.keyword">return</span> RedirectToAction(nameof(Index));
+}
+    </code></pre>
+    <div class="block"><h3>Tip</h3><ul>
+      <li>Kích hoạt client-side validation bằng unobtrusive: thêm <code>_ValidationScriptsPartial</code> trong View.</li>
+      <li>Luôn tách <em>ViewModel</em> khỏi <em>Entity</em> để tránh over-posting.</li>
+    </ul></div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <div class="section-title"><span class="badge">6</span><h2>Razor View, Partial &amp; Tag Helpers</h2></div>
+    <pre class="code"><code>
+<span class="token.comment">@* Views/Jobs/Index.cshtml *@</span>
+@model IEnumerable&lt;JobVm&gt;
+
+&lt;h2&gt;Danh sách công việc&lt;/h2&gt;
+&lt;table class="table"&gt;
+  &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Tiêu đề&lt;/th&gt;&lt;th&gt;Lương&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+  &lt;tbody&gt;
+  @foreach (var j in Model) {
+    &lt;tr&gt;&lt;td&gt;@j.Title&lt;/td&gt;&lt;td&gt;@j.Salary&lt;/td&gt;&lt;/tr&gt;
+  }
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;partial name="_CreateButton" /&gt;
+    </code></pre>
+    <pre class="code"><code>
+<span class="token.comment">@* Views/Shared/_CreateButton.cshtml *@</span>
+&lt;a asp-controller="Jobs" asp-action="Create" class="btn ghost"&gt;+ Thêm Job&lt;/a&gt;
+    </code></pre>
+    <div class="block"><h3>Mẹo</h3><ul>
+      <li>Dùng <strong>Tag Helpers</strong> (<code>asp-controller</code>, <code>asp-action</code>) để tạo URL an toàn.</li>
+      <li>Layout tại <code>Views/Shared/_Layout.cshtml</code> quản lý header/footer đồng nhất.</li>
+    </ul></div>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <div class="section-title"><span class="badge">7</span><h2>Authentication &amp; Authorization (vai trò & policy)</h2></div>
+    <pre class="code"><code>
+<span class="token.comment">// Program.cs – thêm Identity cookie cơ bản</span>
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+  .AddCookie(o =&gt; { o.LoginPath = <span class="token.string">"/Auth/Login"</span>; });
+
+builder.Services.AddAuthorization(o =&gt; {
+  o.AddPolicy(<span class="token.string">"AdminOnly"</span>, p =&gt; p.RequireRole(<span class="token.string">"Admin"</span>));
+});
+    </code></pre>
+    <pre class="code"><code>
+<span class="token.comment">// JobsController.cs</span>
+[Authorize(Policy = <span class="token.string">"AdminOnly"</span>)]
+<span class="token.keyword">public class</span> JobsController : Controller { ... }
+    </code></pre>
+    <div class="block"><h3>Gợi ý</h3><ul>
+      <li>Dự án thực tế: dùng <code>ASP.NET Core Identity</code> hoặc OAuth/OpenID Connect.</li>
+      <li>Phân quyền theo <strong>policy</strong> để linh hoạt hơn role cứng.</li>
+    </ul></div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section>
+    <div class="section-title"><span class="badge">8</span><h2>Kết luận & checklist nhanh</h2></div>
+    <ul>
+      <li>Middleware đúng thứ tự; log lỗi tập trung (Serilog).</li>
+      <li>Controller mảnh; business nằm trong Service; dùng DI.</li>
+      <li>EF Core: cấu hình quan hệ, index; migration sạch.</li>
+      <li>ViewModel + validation 2 chiều (server/client).</li>
+      <li>AuthZ theo policy; audit các action nhạy cảm.</li>
+    </ul>
+    <nav style="margin-top:16px"><a href="#" class="btn ghost back-button">← Quay lại</a></nav>
+  </section>
+
+  <!-- Related -->
+  <section class="related"><h2>Related Posts</h2>
+    <div class="rel-grid">
+      <article class="rel-card"><img src="pics/sqlserver.png" alt="SQL Server"><div class="rel-body">
+        <div class="rel-title">SQL Server</div><div class="rel-meta">DB</div>
+        <p class="rel-excerpt">Thiết kế bảng & index, tối ưu truy vấn.</p>
+        <a class="rel-btn" href="post6.html?from=blog.html">Read More</a>
+      </div></article>
+
+      <article class="rel-card"><img src="pics/restapi.png" alt="RESTful API"><div class="rel-body">
+        <div class="rel-title">RESTful API</div><div class="rel-meta">API</div>
+        <p class="rel-excerpt">Expose nghiệp vụ, versioning & bảo mật.</p>
+        <a class="rel-btn" href="post8.html?from=blog.html">Read More</a>
+      </div></article>
+
+      <article class="rel-card"><img src="pics/itcareer.jpg" alt="Hướng nghiệp CNTT"><div class="rel-body">
+        <div class="rel-title">Ứng dụng CNTT</div><div class="rel-meta">Career</div>
+        <p class="rel-excerpt">Định hướng phát triển & kỹ năng nền tảng.</p>
+        <a class="rel-btn" href="post9.html?from=blog.html">Read More</a>
+      </div></article>
+    </div>
+  </section>
+</article></main>
+
+<footer class="site-footer">
+    <div class="container footer-grid">
+      <div><h2>TRẦN LÊ MINH QUỐC</h2></div>
+      <div>
+        <h2>Điều hướng</h2>
+        <ul class="foot-list">
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Kết nối</h2>
+        <ul class="foot-list">
+          <li><a href="https://github.com/quoctran0502" target="_blank" rel="noopener"><img src="pics/icons/github.svg" alt="GitHub"></a></li>
+          <li><a href="https://www.facebook.com/quoc.trann05" target="_blank" rel="noopener"><img src="pics/icons/facebook.svg" alt="Facebook"></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">© <span id="year">2025</span> • TRẦN LÊ MINH QUỐC</div>
+  </footer><script>
+(() => {
+  const y=document.getElementById('year'); y&&(y.textContent=new Date().getFullYear());
+  const b=document.querySelector('.back-button');
+  const f=new URLSearchParams(location.search).get('from');
+  b&&b.addEventListener('click',e=>{
+    e.preventDefault();
+    if(f){ location.replace(f); }
+    else if(history.length>1){ history.back(); }
+    else{ location.href='blog.html'; }
+  });
+})();
+</script>
+</body></html>

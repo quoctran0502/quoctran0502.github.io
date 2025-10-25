@@ -1,0 +1,180 @@
+<!doctype html><html lang="vi"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Thiết Kế Giao Diện Web Với HTML & CSS</title>
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="post.css">
+</head><body>
+<header class="site-header"><div class="container nav">
+  <a class="brand" href="index.html"><img class="logo" src="pics/logo.png" onerror="this.style.display='none'"><span class="brand-text">TranLeMinhQuoc</span></a>
+  <nav class="menu"><a href="index.html#hero">Home</a><a href="about.html">Giới thiệu</a><a href="blog.html">Blog</a><a href="contact.html">Liên hệ</a></nav>
+</div></header>
+
+<main><article class="post-article">
+  <header class="post-head"><h1>Thiết Kế Giao Diện Web Với HTML & CSS</h1><div class="meta">Năm 2 • 2023</div></header>
+  <div class="divider"></div>
+
+  <!-- 1 -->
+  <section>
+    <div class="section-title"><span class="badge">1</span><h2>Khung Semantic HTML</h2></div>
+    <p>Dùng thẻ ngữ nghĩa giúp cấu trúc rõ ràng, hỗ trợ SEO và trợ năng (screen reader). Khung cơ bản:</p>
+    <pre class="code"><code>
+&lt;header class="site-header"&gt;...&lt;/header&gt;
+&lt;main id="main"&gt;
+  &lt;section aria-labelledby="hero-title"&gt;...&lt;/section&gt;
+  &lt;section aria-labelledby="features-title"&gt;...&lt;/section&gt;
+  &lt;article&gt;...&lt;/article&gt;
+&lt;/main&gt;
+&lt;footer class="site-footer"&gt;...&lt;/footer&gt;
+    </code></pre>
+    <div class="block">
+      <h3>Mẹo semantic</h3>
+      <ul>
+        <li>Dùng <code>&lt;nav aria-label="Điều hướng chính"&gt;</code> cho menu.</li>
+        <li>Gắn <code>id</code> vào heading và tham chiếu bằng <code>aria-labelledby</code>.</li>
+        <li>Chỉ một <code>&lt;h1&gt;</code> cho mỗi trang; phần còn lại <code>h2–h3</code> theo cấp.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="section-title"><span class="badge">2</span><h2>Layout với Flexbox & Grid</h2></div>
+    <p>Flexbox để xếp hàng/dòng, Grid để chia khu vực lớn. Ví dụ layout 2 cột nội dung – sidebar:</p>
+    <pre class="code"><code>
+/* Container chuẩn */
+.container { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+/* Grid 2 cột */
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+/* Nav dùng Flex */
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+}
+    </code></pre>
+    <div class="block">
+      <h3>Chuyển mobile-first</h3>
+      <ul>
+        <li>Bắt đầu 1 cột; nâng dần lên 2–3 cột bằng media query.</li>
+        <li>Đặt <code>gap</code> thay vì margin lẻ tẻ để dễ kiểm soát khoảng cách.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="section-title"><span class="badge">3</span><h2>Responsive Typography & Spacing</h2></div>
+    <p>Dùng biến CSS + <code>clamp()</code> để font co giãn mượt mà theo viewport.</p>
+    <pre class="code"><code>
+:root{
+  --step--1: clamp(12px, 0.85vw, 14px);
+  --step-0 : clamp(14px, 1.0vw, 16px);
+  --step-1 : clamp(18px, 2.2vw, 24px);
+  --step-2 : clamp(26px, 3.2vw, 36px);
+}
+body{ font-size: var(--step-0); }
+h1{ font-size: var(--step-2); line-height: 1.1; }
+h2{ font-size: var(--step-1); }
+    </code></pre>
+    <div class="block">
+      <h3>Khoảng cách</h3>
+      <ul>
+        <li>Chuẩn hóa bằng bộ thang khoảng cách (8, 12, 16, 20, 28…).</li>
+        <li>Dùng <code>min()</code>/<code>max()</code>/<code>clamp()</code> cho padding/margin quan trọng.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="section-title"><span class="badge">4</span><h2>Component: Card & Button</h2></div>
+    <p>Một card đơn giản + nút hành động theo style của theme hiện tại:</p>
+    <pre class="code"><code>
+&lt;article class="card"&gt;
+  &lt;img src="pics/sample.jpg" alt="Mô tả ảnh"&gt;
+  &lt;div class="p-16"&gt;
+    &lt;h3 class="title"&gt;Tiêu đề&lt;/h3&gt;
+    &lt;p class="muted"&gt;Mô tả ngắn gọn nội dung card.&lt;/p&gt;
+    &lt;div class="actions"&gt;
+      &lt;a class="btn primary" href="#"&gt;Xem thêm&lt;/a&gt;
+      &lt;a class="btn ghost" href="#"&gt;Lưu&lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/article&gt;
+
+/* CSS khớp với styles.css/post.css của bạn */
+.card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.card:hover{ transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.btn{ display:inline-flex; align-items:center; gap:10px; padding:12px 18px; border-radius:12px; }
+.btn.primary{ background: linear-gradient(135deg, var(--brand), var(--brand-2)); color:#fff; border:0; }
+.btn.ghost{ background: transparent; border:2px solid var(--brand); color: var(--brand); }
+    </code></pre>
+    <div class="block">
+      <h3>Tip nhỏ</h3>
+      <ul>
+        <li>Thêm trạng thái <code>:hover</code>, <code>:focus-visible</code> nhất quán cho A11y.</li>
+        <li>Dùng <code>aspect-ratio</code> cho ảnh để tránh layout shift.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="section-title"><span class="badge">5</span><h2>Checklist A11y & Hiệu năng</h2></div>
+    <ul>
+      <li>Ảnh có <code>alt</code> có nghĩa; icon trang trí dùng <code>aria-hidden="true"</code>.</li>
+      <li>Độ tương phản màu văn bản ≥ 4.5:1 cho cỡ chữ thường.</li>
+      <li>Dùng <code>loading="lazy"</code> cho ảnh dưới màn hình đầu tiên.</li>
+      <li>Nhóm CSS quan trọng vào 1 file; defer/async JS không cần thiết lập tức.</li>
+    </ul>
+  </section>
+
+  <div class="divider"></div>
+
+  <section>
+    <div class="section-title"><span class="badge">6</span><h2>Kết luận</h2></div>
+    <p>HTML tạo cấu trúc, CSS tạo trải nghiệm. Bắt đầu từ semantic + layout rõ ràng, thêm responsive thông minh và component tái dùng — bạn sẽ có một UI hiện đại, mượt và dễ mở rộng.</p>
+    <nav style="margin-top:16px"><a href="#" class="btn ghost back-button">← Quay lại</a></nav>
+  </section>
+
+  <!-- Related -->
+  <section class="related"><h2>Related Posts</h2>
+    <div class="rel-grid">
+      <article class="rel-card"><img src="pics/javascript_basic.jpg" alt="JavaScript cơ bản"><div class="rel-body"><div class="rel-title">JavaScript – Linh hồn Web</div><div class="rel-meta">Web • JS</div><p class="rel-excerpt">Thêm tương tác.</p><a class="rel-btn" href="post5.html?from=blog.html">Read More</a></div></article>
+      <article class="rel-card"><img src="pics/aspnetcore.png" alt="ASP.NET Core MVC"><div class="rel-body"><div class="rel-title">ASP.NET Core MVC</div><div class="rel-meta">Web • MVC</div><p class="rel-excerpt">Kết nối DB &amp; View.</p><a class="rel-btn" href="post7.html?from=blog.html">Read More</a></div></article>
+      <article class="rel-card"><img src="pics/restapi.png" alt="RESTful API"><div class="rel-body"><div class="rel-title">RESTful API</div><div class="rel-meta">API</div><p class="rel-excerpt">Thiết kế endpoint.</p><a class="rel-btn" href="post8.html?from=blog.html">Read More</a></div></article>
+    </div>
+  </section>
+</article></main>
+
+<footer class="site-footer">
+    <div class="container footer-grid">
+      <div><h2>TRẦN LÊ MINH QUỐC</h2></div>
+      <div>
+        <h2>Điều hướng</h2>
+        <ul class="foot-list">
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Kết nối</h2>
+        <ul class="foot-list">
+          <li><a href="https://github.com/quoctran0502" target="_blank" rel="noopener"><img src="pics/icons/github.svg" alt="GitHub"></a></li>
+          <li><a href="https://www.facebook.com/quoc.trann05" target="_blank" rel="noopener"><img src="pics/icons/facebook.svg" alt="Facebook"></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">© <span id="year">2025</span> • TRẦN LÊ MINH QUỐC</div>
+  </footer><script>(()=>{const y=document.getElementById('year');y&&(y.textContent=new Date().getFullYear());const b=document.querySelector('.back-button');const f=new URLSearchParams(location.search).get('from');b&&b.addEventListener('click',e=>{e.preventDefault();if(f)location.replace(f);else if(history.length>1)history.back();else location.href='blog.html';});})();</script>
+</body></html>

@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Giới thiệu • Q_Blog</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <nav class="nav container">
+      <a href="index.html" class="brand"><span class="brand-text">Q_Blog</span></a>
+      <div class="menu">
+        <a href="index.html">Home</a>
+        <a href="about.html" aria-current="page" class="active">Giới thiệu</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Liên hệ</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main -->
+  <main>
+
+    <!-- HERO -->
+    <section class="section">
+      <div class="container about-hero card">
+        <figure class="about-photo">
+          <img src="pics/avatar.jpg" alt="Ảnh Trần Lê Minh Quốc" loading="eager" width="640" height="800" />
+        </figure>
+
+        <article class="about-text">
+          <h1 class="section-title">Giới thiệu</h1>
+          <p>Xin chào! Mình là <b>Trần Lê Minh Quốc</b> — sinh viên ngành Công nghệ phần mềm tại HUTECH.
+            Đây là blog nơi mình chia sẻ kiến thức lập trình mạng, phát triển web và các dự án học tập.</p>
+          <p>Blog được xây bằng <b>HTML, CSS, JavaScript</b> và triển khai trên <b>GitHub Pages</b>. 
+            Mục tiêu là giúp bạn tiếp cận nhanh các công nghệ như <b>ASP.NET Core MVC</b>, <b>REST API</b>, 
+            <b>SQL Server</b> và <b>GitHub</b>.</p>
+
+          <div class="about-actions">
+            <a class="btn"
+               href="docs/TranLeMinhQuoc-CV.pdf"
+               target="_blank"
+               rel="noopener">
+               Xem CV (PDF)
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- KỸ NĂNG -->
+    <section class="section alt">
+      <div class="container">
+        <aside class="card fullwidth">
+          <h2 class="section-title">Kỹ năng</h2>
+          <ul class="skills">
+            <li class="skill"><span class="skill-name">Tự học</span><span class="stars"><i class="on">★</i><i class="on">★</i><i class="on">★</i><i class="on">★</i><i class="on">★</i></span></li>
+            <li class="skill"><span class="skill-name">Sáng tạo</span><span class="stars"><i class="on">★</i><i class="on">★</i><i class="on">★</i><i class="on">★</i><i>★</i></span></li>
+            <li class="skill"><span class="skill-name">Quản lý thời gian</span><span class="stars"><i class="on">★</i><i class="on">★</i><i class="on">★</i><i class="on">★</i><i>★</i></span></li>
+            <li class="skill"><span class="skill-name">Giải quyết vấn đề</span><span class="stars"><i class="on">★</i><i class="on">★</i><i class="on">★</i><i class="on">★</i><i>★</i></span></li>
+            <li class="skill"><span class="skill-name">Làm việc nhóm</span><span class="stars"><i class="on">★</i><i class="on">★</i><i class="on">★</i><i class="on">★</i><i>★</i></span></li>
+            <li class="skill"><span class="skill-name">Kỹ năng giao tiếp</span><span class="stars"><i class="on">★</i><i class="on">★</i><i class="on">★</i><i class="on">★</i><i>★</i></span></li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- CÁC DỰ ÁN ĐÃ THAM GIA -->
+<section id="du-an" class="section alt">
+  <div class="container">
+    <div class="section-head">
+      <h2>Các dự án đã tham gia</h2>
+    </div>
+
+    <div class="grid-3">
+
+      <!-- Dự án 1 -->
+      <article class="project card">
+        <img src="pics/regrade-1.png" loading="lazy" alt="">
+        <div class="p-body">
+          <a class="post-title" href="phuckhao.html?from=index.html" rel="noopener">Hệ thống hỗ trợ phúc khảo</a>
+          <p class="muted">Hệ thống hỗ trợ phúc khảo – cho phép sinh viên gửi đơn phúc khảo và theo dõi trạng thái.</p>
+          <div class="tags">
+            <span class="tag">ASP.NET Core</span><span class="tag">REST API</span>
+            <span class="tag">SQL Server</span><span class="tag">HTML</span><span class="tag">CSS</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Dự án 2 -->
+      <article class="project card">
+        <img src="pics/jobportal.png" loading="lazy" alt="">
+        <div class="p-body">
+          <a class="post-title" href="jobportal.html?from=index.html" rel="noopener">JobPortal</a>
+          <p class="muted">Website tìm kiếm việc làm – kết nối ứng viên và nhà tuyển dụng.</p>
+          <div class="tags">
+            <span class="tag">ASP.NET Core</span><span class="tag">SQL Server</span>
+            <span class="tag">MVC</span><span class="tag">HTML</span><span class="tag">CSS</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Dự án 3 -->
+      <article class="project card">
+        <img src="pics/cf1.png" loading="lazy" alt="">
+        <div class="p-body">
+          <a class="post-title" href="qlycf.html?from=index.html" rel="noopener">Quản lý quán Coffee</a>
+          <p class="muted">Ứng dụng quản lý quán cà phê – đặt bàn, order, thanh toán và thống kê.</p>
+          <div class="tags">
+            <span class="tag">HTML</span><span class="tag">CSS</span>
+            <span class="tag">ASP.NET Core</span><span class="tag">SQL Server</span><span class="tag">MVC</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+
+    <!-- CHỨNG CHỈ -->
+    <section class="section alt">
+      <div class="container">
+        <aside class="card fullwidth">
+          <h2 class="section-title">Chứng chỉ</h2>
+          <div class="cert-list">
+            <div class="cert-item">
+              <h3 class="cert-title">JavaScript Essentials 1</h3>
+              <div class="cert-card">
+                <img src="pics/certs/jse1.png" alt="JavaScript Essentials 1" loading="lazy">
+              </div>
+            </div>
+            <div class="cert-item">
+              <h3 class="cert-title">JavaScript Essentials 2</h3>
+              <div class="cert-card">
+                <img src="pics/certs/jse2.png" alt="JavaScript Essentials 2" loading="lazy">
+              </div>
+            </div>
+            <div class="cert-item">
+              <h3 class="cert-title">Networking Basics</h3>
+              <div class="cert-card">
+                <img src="pics/certs/networking-basics.png" alt="Networking Basics" loading="lazy">
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <h2>TRẦN LÊ MINH QUỐC</h2>
+      </div>
+      <div>
+        <h2>Điều hướng</h2>
+        <ul class="foot-list">
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Kết nối</h2>
+        <ul class="foot-list">
+  <li>
+    <a href="https://github.com/quoctran0502" target="_blank" rel="noopener">
+      <img src="pics/icons/github.svg" alt="GitHub">
+    </a>
+  </li>
+  <li>
+    <a href="https://www.facebook.com/quoc.trann05" target="_blank" rel="noopener">
+      <img src="pics/icons/facebook.svg" alt="Facebook">
+    </a>
+  </li>
+</ul>
+
+      </div>
+    </div>
+    <div class="copyright">© <span id="year">2025</span> • TRẦN LÊ MINH QUỐC</div>
+  </footer>
+
+  <script>
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

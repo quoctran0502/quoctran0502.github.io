@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Khám Phá Cấu Trúc Mạng Máy Tính</title>
+  <meta name="description" content="Khám phá cách dữ liệu di chuyển qua Internet, các lớp giao thức và ví dụ minh họa bằng Socket cơ bản." />
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="post.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html" aria-label="Trang chủ">
+        <img class="logo" src="pics/logo.png" onerror="this.style.display='none'">
+        <span class="brand-text">TranLeMinhQuoc</span>
+      </a>
+      <nav class="menu" aria-label="Điều hướng chính">
+        <a href="index.html#hero">Home</a>
+        <a href="about.html">Giới thiệu</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Liên hệ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <article class="post-article">
+      <header class="post-head">
+        <h1>Khám Phá Cấu Trúc Mạng Máy Tính</h1>
+        <div class="meta">Năm 1 • 2022</div>
+      </header>
+
+      <div class="divider"></div>
+
+      <!-- 1 -->
+      <section>
+        <div class="section-title">
+          <span class="badge">1</span>
+          <h2>Bắt đầu từ một câu hỏi...</h2>
+        </div>
+        <p>“Khi em gõ <strong>facebook.com</strong> vào trình duyệt, điều gì xảy ra?” Câu hỏi nhỏ mở ra cả một thế giới: DNS để phân giải tên miền, IP để định danh máy, TCP để đảm bảo truyền tải tin cậy…</p>
+      </section>
+
+      <!-- 2 -->
+      <section>
+        <div class="section-title">
+          <span class="badge">2</span>
+          <h2>Luồng Byte và Luồng Ký Tự</h2>
+        </div>
+        <p>Trong Java, <em>stream</em> được chia làm hai nhóm chính:</p>
+
+        <table class="table" aria-label="So sánh byte stream và character stream trong Java">
+          <thead>
+            <tr>
+              <th>Loại Luồng</th>
+              <th>Lớp Chính</th>
+              <th>Dữ Liệu Xử Lý</th>
+              <th>Ứng Dụng</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Luồng Byte</td>
+              <td><code>InputStream</code>, <code>OutputStream</code></td>
+              <td>Nhị phân (binary)</td>
+              <td>Ảnh, video, file nén, dữ liệu socket TCP</td>
+            </tr>
+            <tr>
+              <td>Luồng Ký Tự</td>
+              <td><code>Reader</code>, <code>Writer</code></td>
+              <td>Văn bản (text)</td>
+              <td>File <code>.txt</code>, JSON, HTML, UTF-8</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="block" style="margin-top:12px">
+          <h3>Tóm lại</h3>
+          <ul>
+            <li>Dùng <strong>byte stream</strong> cho dữ liệu thô (ảnh, nhị phân).</li>
+            <li>Dùng <strong>character stream</strong> cho văn bản (có mã hóa ký tự).</li>
+          </ul>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <!-- 3 -->
+      <section>
+        <div class="section-title">
+          <span class="badge">3</span>
+          <h2>Ví dụ: Đọc và ghi dữ liệu qua Socket</h2>
+        </div>
+        <p>Ví dụ nhỏ về <strong>Echo Server</strong> — server nhận dữ liệu từ client rồi phản hồi lại:</p>
+
+        <pre class="code"><code>
+<span class="token.comment">// File: EchoServer.java</span>
+<span class="token.keyword">import</span> java.io.*;
+<span class="token.keyword">import</span> java.net.*;
+
+<span class="token.keyword">public class</span> <span class="token.type">EchoServer</span> {
+  <span class="token.keyword">public static void</span> main(String[] args) <span class="token.keyword">throws</span> IOException {
+    ServerSocket server = <span class="token.keyword">new</span> ServerSocket(9000);
+    System.out.println(<span class="token.string">"Server đang chạy..."</span>);
+
+    Socket socket = server.accept(); <span class="token.comment">// Chờ client kết nối</span>
+    BufferedReader in = <span class="token.keyword">new</span> BufferedReader(<span class="token.keyword">new</span> InputStreamReader(socket.getInputStream()));
+    PrintWriter out = <span class="token.keyword">new</span> PrintWriter(socket.getOutputStream(), <span class="token.keyword">true</span>);
+
+    String msg = in.readLine();
+    System.out.println(<span class="token.string">"Nhận từ client: "</span> + msg);
+    out.println(<span class="token.string">"Server nhận được: "</span> + msg);
+
+    socket.close();
+    server.close();
+  }
+}
+        </code></pre>
+
+        <h3 style="margin-top:14px">Giải thích</h3>
+        <ul>
+          <li><code>BufferedReader</code> đọc văn bản từ input stream.</li>
+          <li><code>InputStreamReader</code> chuyển byte → ký tự.</li>
+          <li><code>PrintWriter</code> ghi văn bản ra socket.</li>
+        </ul>
+      </section>
+
+      <div class="divider"></div>
+
+      <!-- 4 -->
+      <section>
+        <div class="section-title">
+          <span class="badge">4</span>
+          <h2>Kết luận</h2>
+        </div>
+        <p>Nắm tầng giao thức + thử nghiệm socket giúp ta “nhìn thấy” Internet vận hành. Nền tảng này rất hữu ích khi tiến lên web backend, API và bảo mật.</p>
+
+        <nav style="margin-top:16px">
+          <a href="#" class="btn ghost back-button">← Quay lại</a>
+        </nav>
+      </section>
+
+      <!-- Related -->
+      <section class="related">
+        <h2>Related Posts</h2>
+        <div class="rel-grid">
+          <article class="rel-card">
+            <img src="pics/java_oop.png" alt="OOP trong Java">
+            <div class="rel-body">
+              <div class="rel-title">Lập trình Hướng Đối Tượng trong Java</div>
+              <div class="rel-meta">Java • OOP</div>
+              <p class="rel-excerpt">Class, kế thừa, đa hình – nền để đi xa.</p>
+              <a class="rel-btn" href="post3.html?from=blog.html">Read More</a>
+            </div>
+          </article>
+
+          <article class="rel-card">
+            <img src="pics/aspnetcore.png" alt="ASP.NET Core MVC">
+            <div class="rel-body">
+              <div class="rel-title">Xây dựng Web với ASP.NET Core MVC</div>
+              <div class="rel-meta">.NET • MVC</div>
+              <p class="rel-excerpt">Luồng MVC, EF Core và best practices.</p>
+              <a class="rel-btn" href="post7.html?from=blog.html">Read More</a>
+            </div>
+          </article>
+
+          <article class="rel-card">
+            <img src="pics/restapi.png" alt="RESTful API">
+            <div class="rel-body">
+              <div class="rel-title">Triển khai RESTful API</div>
+              <div class="rel-meta">API • JSON</div>
+              <p class="rel-excerpt">Thiết kế endpoint chuẩn, versioning.</p>
+              <a class="rel-btn" href="post8.html?from=blog.html">Read More</a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div><h2>TRẦN LÊ MINH QUỐC</h2></div>
+      <div>
+        <h2>Điều hướng</h2>
+        <ul class="foot-list">
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Kết nối</h2>
+        <ul class="foot-list">
+          <li><a href="https://github.com/quoctran0502" target="_blank" rel="noopener"><img src="pics/icons/github.svg" alt="GitHub"></a></li>
+          <li><a href="https://www.facebook.com/quoc.trann05" target="_blank" rel="noopener"><img src="pics/icons/facebook.svg" alt="Facebook"></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">© <span id="year">2025</span> • TRẦN LÊ MINH QUỐC</div>
+  </footer>
+
+  <script>
+    (function () {
+      const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
+      const btn = document.querySelector('.back-button');
+      const from = new URLSearchParams(location.search).get('from');
+      btn && btn.addEventListener('click', e => {
+        e.preventDefault();
+        if (from) { location.replace(from); }
+        else if (history.length > 1) { history.back(); }
+        else { location.href = 'blog.html'; }
+      });
+    })();
+  </script>
+</body>
+</html>
